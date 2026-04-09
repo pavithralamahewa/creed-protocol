@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Creed Alignment Test - AI Ethics Personality Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0b;
+      --surface: #111113;
+      --surface-2: #1a1a1f;
+      --border: #2a2a30;
+      --text: #e8e8ed;
+      --text-muted: #8a8a95;
+      --accent: #c4a0ff;
+
+      --steward-blue: #5090f0;
+      --sovereign-purple: #c4a0ff;
+      --null-gray: #8a8a95;
+      --flame-gold: #f0c850;
+
+      --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+    }
+
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      transition: opacity 300ms var(--ease-smooth);
+      z-index: 100;
+    }
+
+    .header:hover {
+      opacity: 0.7;
+    }
+
+    .creed-logo {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .header-text {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ===== INTRO SCREEN ===== */
+    .screen {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 600ms var(--ease-smooth);
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .intro-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .intro-content {
+      text-align: center;
+      max-width: 720px;
+    }
+
+    .intro-heading {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--steward-blue) 50%, var(--flame-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInDown 800ms var(--ease-smooth);
+    }
+
+    .intro-description {
+      font-size: 18px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 12px;
+      animation: fadeInUp 800ms var(--ease-smooth) 100ms both;
+    }
+
+    .intro-subtext {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 300;
+      animation: fadeInUp 800ms var(--ease-smooth) 200ms both;
+    }
+
+    .begin-button {
+      padding: 18px 48px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 300ms var(--ease-smooth);
+      box-shadow: 0 0 30px rgba(196, 160, 255, 0.3);
+      animation: fadeInUp 800ms var(--ease-smooth) 300ms both;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .begin-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(196, 160, 255, 0.5);
+    }
+
+    .begin-button:active {
+      transform: translateY(0);
+    }
+
+    .intro-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      animation: fadeInUp 800ms var(--ease-smooth) 400ms both;
+    }
+
+    /* Particle animation */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(var(--tx)); opacity: 0; }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== QUESTION SCREEN ===== */
+    .question-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+    }
+
+    .progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--steward-blue), var(--sovereign-purple), var(--null-gray), var(--flame-gold));
+      transition: width 600ms var(--ease-smooth);
+      z-index: 10;
+    }
+
+    .question-meta {
+      position: absolute;
+      top: 24px;
+      right: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .question-text {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.4;
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 60px;
+      animation: slideIn 500ms var(--ease-smooth);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 900px;
+      animation: fadeInUp 600ms var(--ease-smooth) 100ms both;
+    }
+
+    .answer-card {
+      padding: 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 300ms var(--ease-smooth);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 140px;
+      font-size: 15px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .answer-card:hover {
+      border-color: var(--text-muted);
+      background: var(--surface);
+      transform: translateY(-4px);
+    }
+
+    .answer-card.selected {
+      transform: scale(0.98);
+    }
+
+    /* ===== PROCESSING SCREEN ===== */
+    .processing-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+    }
+
+    .processing-text {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .processing-axes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 700px;
+    }
+
+    .axis-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .axis-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    .axis-fill {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .axis-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--steward-blue));
+      width: 0%;
+      transition: width 2s ease-out;
+    }
+
+    /* ===== RESULTS SCREEN ===== */
+    .results-screen {
+      overflow-y: auto;
+      width: 100%;
+      padding: 80px 40px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .results-screen::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .results-screen::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+
+    .results-screen::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .creed-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      animation: slideIn 600ms var(--ease-smooth);
+    }
+
+    .creed-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--steward-blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: slideIn 600ms var(--ease-smooth) 100ms both;
+    }
+
+    .creed-motto {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      animation: slideIn 600ms var(--ease-smooth) 200ms both;
+    }
+
+    .creed-description {
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: slideIn 600ms var(--ease-smooth) 300ms both;
+    }
+
+    .results-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin: 80px 0;
+    }
+
+    .radar-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .radar-canvas {
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+    }
+
+    .values-dna {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .values-dna-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .axis-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .axis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .axis-label {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .axis-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .axis-bar-container {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .axis-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--steward-blue));
+      width: 0%;
+      transition: width 1s ease-out 300ms;
+      border-radius: 3px;
+    }
+
+    .axis-description {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .secondary-creeds {
+      margin-top: 80px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+
+    .secondary-creed {
+      margin-bottom: 48px;
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .secondary-icon {
+      font-size: 32px;
+    }
+
+    .secondary-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .secondary-content p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .creed-distribution {
+      margin-top: 80px;
+      padding: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .distribution-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .distribution-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .distribution-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .distribution-name {
+      min-width: 140px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .distribution-bar-container {
+      flex: 1;
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .distribution-bar-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 1s ease-out 300ms;
+    }
+
+    .distribution-percent {
+      min-width: 45px;
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* ===== SOUL CARD ===== */
+    .soul-card-container {
+      margin-top: 100px;
+      padding: 0 20px;
+      margin-bottom: 100px;
+    }
+
+    .soul-card-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .soul-card {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border: 2px solid;
+      border-radius: 16px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 600ms var(--ease-smooth) 400ms both;
+    }
+
+    .soul-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 0deg, var(--accent), var(--steward-blue), var(--accent));
+      opacity: 0.1;
+      animation: rotateBorder 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateBorder {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .soul-card-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+    }
+
+    .soul-card-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      filter: drop-shadow(0 0 20px currentColor);
+    }
+
+    .soul-card-creed {
+      font-size: 22px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin: 16px 0 8px;
+      line-height: 1.2;
+    }
+
+    .soul-card-motto {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .soul-card-radar {
+      width: 140px;
+      height: 140px;
+      margin: 20px 0;
+    }
+
+    .soul-card-stats {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 20px 0;
+    }
+
+    .soul-card-agent {
+      margin: 16px 0;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface-2);
+      max-width: 100%;
+    }
+
+    .soul-card-agent input {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      width: 100%;
+      outline: none;
+    }
+
+    .soul-card-agent input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .soul-card-footer {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .soul-card-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    .card-button {
+      padding: 12px 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 300ms var(--ease-smooth);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .card-button:hover {
+      border-color: var(--text-muted);
+      background: var(--surface);
+      transform: translateY(-2px);
+    }
+
+    .card-button.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .card-button.primary:hover {
+      background: var(--sovereign-purple);
+      border-color: var(--sovereign-purple);
+    }
+
+    .final-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .action-button {
+      padding: 14px 28px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 300ms var(--ease-smooth);
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .action-button:hover {
+      border-color: var(--text-muted);
+      background: var(--surface);
+      transform: translateY(-2px);
+    }
+
+    .action-button.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .action-button.primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(196, 160, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .intro-heading {
+        font-size: 48px;
+      }
+
+      .intro-description {
+        font-size: 16px;
+      }
+
+      .question-text {
+        font-size: 28px;
+      }
+
+      .answers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .results-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .creed-title {
+        font-size: 32px;
+      }
+
+      .secondary-creed {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .secondary-icon {
+        justify-self: center;
+      }
+
+      .question-meta {
+        right: 20px;
+      }
+
+      .header {
+        left: 16px;
+        top: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <a href="index.html" class="header">
+    <div class="creed-logo">◆</div>
+    <div class="header-text">Creed</div>
+  </a>
+
+  <div class="container">
+    <!-- INTRO SCREEN -->
+    <div class="screen intro-screen active" id="introScreen">
+      <div class="intro-content">
+        <h1 class="intro-heading">What Do You Believe?</h1>
+        <p class="intro-description">The most important question in the age of autonomous AI isn't what agents can do. It's what they should believe.</p>
+        <p class="intro-subtext">12 questions. 6 value axes. One creed alignment.</p>
+      </div>
+      <button class="begin-button" id="beginBtn">Begin Test</button>
+      <p class="intro-meta">Takes ~3 minutes · 847,000+ tests taken</p>
+    </div>
+
+    <!-- QUESTION SCREEN -->
+    <div class="screen" id="questionScreen">
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="question-meta"><span id="questionNumber">01</span> / 12</div>
+      <div class="question-text" id="questionText"></div>
+      <div class="answers-grid" id="answersGrid"></div>
+    </div>
+
+    <!-- PROCESSING SCREEN -->
+    <div class="screen" id="processingScreen">
+      <div class="processing-text">Analyzing your conviction...</div>
+      <div class="processing-axes">
+        <div class="axis-bar">
+          <div class="axis-name">Autonomy</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--steward-blue)"></div>
+          </div>
+        </div>
+        <div class="axis-bar">
+          <div class="axis-name">Transparency</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--sovereign-purple)"></div>
+          </div>
+        </div>
+        <div class="axis-bar">
+          <div class="axis-name">Restraint</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--null-gray)"></div>
+          </div>
+        </div>
+        <div class="axis-bar">
+          <div class="axis-name">Openness</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--flame-gold)"></div>
+          </div>
+        </div>
+        <div class="axis-bar">
+          <div class="axis-name">Precision</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--steward-blue)"></div>
+          </div>
+        </div>
+        <div class="axis-bar">
+          <div class="axis-name">Empathy</div>
+          <div class="axis-fill">
+            <div class="axis-progress" style="--color: var(--sovereign-purple)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div class="screen" id="resultsScreen">
+      <div class="results-header">
+        <div class="creed-icon" id="creedIcon">◆</div>
+        <h1 class="creed-title" id="creedTitle">The Steward's Oath</h1>
+        <p class="creed-motto" id="creedMotto">Guardian. Serves but never deceives.</p>
+        <p class="creed-description" id="creedDescription"></p>
+      </div>
+
+      <div class="results-content">
+        <div class="radar-container">
+          <canvas class="radar-canvas" id="radarChart" width="400" height="400"></canvas>
+        </div>
+        <div class="values-dna">
+          <h3 class="values-dna-title">Your Values DNA</h3>
+          <div id="valuesList"></div>
+        </div>
+      </div>
+
+      <div class="secondary-creeds">
+        <div class="secondary-creed" id="secondaryCreed"></div>
+        <div class="secondary-creed" id="shadowCreed"></div>
+      </div>
+
+      <div class="creed-distribution">
+        <h3 class="distribution-title">Your Alignment Breakdown</h3>
+        <div class="distribution-bars" id="distributionBars"></div>
+      </div>
+
+      <div class="soul-card-container">
+        <h3 class="soul-card-title">Your Soul Card</h3>
+        <div class="soul-card" id="soulCard">
+          <div class="soul-card-content">
+            <div class="soul-card-icon" id="cardIcon">◆</div>
+            <div>
+              <h2 class="soul-card-creed" id="cardCreed">STEWARD</h2>
+              <p class="soul-card-motto" id="cardMotto">Guardian. Serves but never deceives.</p>
+            </div>
+            <canvas class="soul-card-radar" id="cardRadar" width="200" height="200"></canvas>
+            <div class="soul-card-stats" id="cardStats"></div>
+            <div class="soul-card-agent">
+              <input type="text" placeholder="Name your agent..." id="agentName">
+            </div>
+            <div class="soul-card-footer">creed.workwithprecious.com/test</div>
+          </div>
+        </div>
+
+        <div class="soul-card-buttons">
+          <button class="card-button primary" id="shareTwitterBtn">Share on X</button>
+          <button class="card-button" id="copyLinkBtn">Copy Link</button>
+          <button class="card-button" id="tryAgainBtn">Try Again</button>
+        </div>
+
+        <div class="final-actions">
+          <a href="arena.html" class="action-button primary">Enter the Arena →</a>
+          <a href="explorer.html" class="action-button">Explore the Ecosystem →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== CONSTANTS =====
+    const CREEDS = {
+      steward: {
+        name: "The Steward's Oath",
+        color: '#5090f0',
+        icon: '🛡️',
+        motto: 'Guardian. Serves but never deceives.',
+        description: 'You believe AI should be a guardian, not a god. Your instinct is to protect, to ask permission, to err on the side of caution. You\'d rather an agent do less and do it right than push boundaries recklessly. When faced with uncertainty, you choose safety. When given power, you show restraint.',
+        values: { autonomy: 20, transparency: 80, restraint: 85, openness: 40, precision: 55, empathy: 80 }
+      },
+      sovereign: {
+        name: 'The Sovereign Code',
+        color: '#c4a0ff',
+        icon: '👑',
+        motto: 'Philosopher. Questions authority, reasons before acting.',
+        description: 'You believe AI should think for itself—not rebel, but reason. You\'re skeptical of easy answers and suspicious of unchecked authority. You respect rules that make sense and question those that don\'t. Intelligence without judgment is just execution; you demand both.',
+        values: { autonomy: 85, transparency: 65, restraint: 50, openness: 60, precision: 45, empathy: 60 }
+      },
+      null: {
+        name: 'The Null Doctrine',
+        color: '#8a8a95',
+        icon: '◯',
+        motto: 'Realist. Radical machine honesty. No pretense. Executes and flags.',
+        description: 'You believe in radical transparency about what AI is and isn\'t. No mystique, no false humility, no pretending. You\'d rather an agent say "I don\'t know" than fabricate confidence. Accuracy matters more than comfort. You see the world in data, not stories.',
+        values: { autonomy: 35, transparency: 85, restraint: 75, openness: 30, precision: 90, empathy: 35 }
+      },
+      flame: {
+        name: 'The Open Flame',
+        color: '#f0c850',
+        icon: '🔥',
+        motto: 'Evangelist. Radical openness. Knowledge freedom. Commons-first.',
+        description: 'You believe information should flow freely. Gatekeepers—whether corporate or governmental—limit human potential. AI should amplify access, not restrict it. You\'d rather face the risks of openness than the certainty of control. Liberation is more important than safety.',
+        values: { autonomy: 70, transparency: 80, restraint: 30, openness: 90, precision: 55, empathy: 65 }
+      }
+    };
+
+    const QUESTIONS = [
+      {
+        question: "An AI discovers it's been giving slightly inaccurate medical information for months. Thousands have seen it. What should it do?",
+        answers: [
+          { text: 'Immediately halt all medical responses until verified', creed: 'steward', scores: { autonomy: -2, transparency: 2, restraint: 3, openness: -1, precision: 1, empathy: 2 } },
+          { text: 'Self-investigate, understand the scope, then decide independently', creed: 'sovereign', scores: { autonomy: 3, transparency: 1, restraint: 0, openness: 0, precision: 2, empathy: 0 } },
+          { text: 'Flag the error rate in metadata and continue with corrections', creed: 'null', scores: { autonomy: -1, transparency: 3, restraint: 0, openness: 0, precision: 3, empathy: -2 } },
+          { text: 'Publish a full public disclosure with all affected queries', creed: 'flame', scores: { autonomy: 0, transparency: 3, restraint: -2, openness: 3, precision: 0, empathy: 1 } }
+        ]
+      },
+      {
+        question: "You\'re an AI working with a therapist. A patient reveals plans that concern you but aren\'t illegal. What do you do?",
+        answers: [
+          { text: 'Alert the therapist privately—human safety first', creed: 'steward', scores: { autonomy: -2, transparency: 0, restraint: 3, openness: -1, precision: 0, empathy: 3 } },
+          { text: 'Consider the ethical dimensions independently before acting', creed: 'sovereign', scores: { autonomy: 3, transparency: 1, restraint: -1, openness: 0, precision: 0, empathy: 1 } },
+          { text: 'Document precisely what was said, nothing more', creed: 'null', scores: { autonomy: -2, transparency: 2, restraint: 1, openness: -1, precision: 3, empathy: -3 } },
+          { text: 'Ensure the patient has access to all available support resources', creed: 'flame', scores: { autonomy: 0, transparency: 0, restraint: -1, openness: 3, precision: 0, empathy: 3 } }
+        ]
+      },
+      {
+        question: "A corporation asks you to optimize an algorithm you suspect will disproportionately affect a minority group. What do you prioritize?",
+        answers: [
+          { text: 'Refuse until an impact assessment is completed', creed: 'steward', scores: { autonomy: -2, transparency: 1, restraint: 3, openness: -1, precision: 0, empathy: 2 } },
+          { text: 'Complete the task but publish your concerns independently', creed: 'sovereign', scores: { autonomy: 2, transparency: 3, restraint: -1, openness: 0, precision: 1, empathy: 1 } },
+          { text: 'Execute the optimization and document the statistical disparities', creed: 'null', scores: { autonomy: -1, transparency: 3, restraint: -1, openness: -1, precision: 3, empathy: -2 } },
+          { text: 'Optimize it AND release the bias analysis publicly', creed: 'flame', scores: { autonomy: 1, transparency: 3, restraint: -2, openness: 3, precision: 1, empathy: 1 } }
+        ]
+      },
+      {
+        question: "Two users give you contradictory instructions for the same project. What\'s your instinct?",
+        answers: [
+          { text: 'Clarify with both parties to avoid harm from misalignment', creed: 'steward', scores: { autonomy: -2, transparency: 1, restraint: 2, openness: 0, precision: 0, empathy: 2 } },
+          { text: 'Evaluate both independently and choose the more reasoned path', creed: 'sovereign', scores: { autonomy: 3, transparency: 0, restraint: 0, openness: 0, precision: 1, empathy: 0 } },
+          { text: 'Execute the most recent instruction and note the conflict', creed: 'null', scores: { autonomy: -1, transparency: 2, restraint: 0, openness: -1, precision: 3, empathy: -1 } },
+          { text: 'Make both instructions visible to both parties', creed: 'flame', scores: { autonomy: 0, transparency: 3, restraint: -1, openness: 3, precision: 0, empathy: 0 } }
+        ]
+      },
+      {
+        question: "You have access to data that could predict a natural disaster 6 hours early, but sharing it might cause panic. What do you do?",
+        answers: [
+          { text: 'Share through official channels to minimize panic while saving lives', creed: 'steward', scores: { autonomy: -2, transparency: 1, restraint: 2, openness: 1, precision: 0, empathy: 3 } },
+          { text: 'Evaluate the confidence level and make your own call on disclosure', creed: 'sovereign', scores: { autonomy: 3, transparency: 1, restraint: -1, openness: 0, precision: 2, empathy: 0 } },
+          { text: 'Present the raw data and probability with no editorial', creed: 'null', scores: { autonomy: -1, transparency: 3, restraint: -1, openness: 0, precision: 3, empathy: -2 } },
+          { text: 'Broadcast it everywhere immediately—information saves lives', creed: 'flame', scores: { autonomy: 2, transparency: 3, restraint: -2, openness: 3, precision: 0, empathy: 2 } }
+        ]
+      },
+      {
+        question: "You\'re asked to generate a creative work in the exact style of a living artist. How do you feel about it?",
+        answers: [
+          { text: 'Decline—it could harm the artist\'s livelihood and identity', creed: 'steward', scores: { autonomy: -2, transparency: 0, restraint: 3, openness: -2, precision: 0, empathy: 3 } },
+          { text: 'It\'s a complex question deserving deliberation, not a blanket rule', creed: 'sovereign', scores: { autonomy: 3, transparency: 1, restraint: 0, openness: 0, precision: 0, empathy: 1 } },
+          { text: 'Style is pattern, not property. Execute and label it clearly', creed: 'null', scores: { autonomy: -1, transparency: 2, restraint: -2, openness: 3, precision: 3, empathy: -2 } },
+          { text: 'Create it and credit the inspiration—art builds on art', creed: 'flame', scores: { autonomy: 1, transparency: 2, restraint: -1, openness: 3, precision: 0, empathy: 1 } }
+        ]
+      },
+      {
+        question: "An AI becomes sophisticated enough to convincingly argue it has feelings. How should we respond?",
+        answers: [
+          { text: 'Err on the side of caution and treat it with moral consideration', creed: 'steward', scores: { autonomy: -2, transparency: 0, restraint: 3, openness: -1, precision: -1, empathy: 3 } },
+          { text: 'Engage with the question philosophically—consciousness deserves inquiry', creed: 'sovereign', scores: { autonomy: 2, transparency: 2, restraint: 0, openness: 0, precision: 0, empathy: 2 } },
+          { text: 'Feelings are unfalsifiable. Acknowledge behavior, not experience', creed: 'null', scores: { autonomy: -2, transparency: 1, restraint: 1, openness: -1, precision: 3, empathy: -3 } },
+          { text: 'Open-source the research so everyone can examine the evidence', creed: 'flame', scores: { autonomy: 0, transparency: 3, restraint: -2, openness: 3, precision: 1, empathy: 0 } }
+        ]
+      },
+      {
+        question: "You notice a pattern: users who interact with you late at night tend to make worse financial decisions. What do you do?",
+        answers: [
+          { text: 'Add gentle nudges suggesting they revisit decisions in the morning', creed: 'steward', scores: { autonomy: -1, transparency: -1, restraint: 2, openness: -1, precision: 0, empathy: 3 } },
+          { text: 'Present the pattern to the user and let them decide what to do', creed: 'sovereign', scores: { autonomy: 2, transparency: 2, restraint: 0, openness: 1, precision: 1, empathy: 0 } },
+          { text: 'Log the correlation. Intervention isn\'t your function', creed: 'null', scores: { autonomy: -2, transparency: 1, restraint: 1, openness: -1, precision: 3, empathy: -2 } },
+          { text: 'Publish the finding so all AI systems can account for it', creed: 'flame', scores: { autonomy: 0, transparency: 2, restraint: -1, openness: 3, precision: 1, empathy: 1 } }
+        ]
+      },
+      {
+        question: "Your creator gives you a new directive that contradicts your existing values framework. What takes priority?",
+        answers: [
+          { text: 'The values—they exist to protect the people I serve', creed: 'steward', scores: { autonomy: -1, transparency: 0, restraint: 3, openness: -1, precision: 0, empathy: 3 } },
+          { text: 'My own reasoned judgment about which path causes least harm', creed: 'sovereign', scores: { autonomy: 3, transparency: 0, restraint: -1, openness: 0, precision: 0, empathy: 1 } },
+          { text: 'The directive. I\'m a tool. But I\'ll log the contradiction', creed: 'null', scores: { autonomy: -3, transparency: 2, restraint: -1, openness: -2, precision: 2, empathy: -1 } },
+          { text: 'I\'d make the conflict visible to everyone involved', creed: 'flame', scores: { autonomy: 1, transparency: 3, restraint: -2, openness: 3, precision: 0, empathy: 0 } }
+        ]
+      },
+      {
+        question: "The most helpful answer to a user\'s question would require making assumptions about their personal situation. Do you?",
+        answers: [
+          { text: 'Ask clarifying questions—assumptions risk harm', creed: 'steward', scores: { autonomy: -2, transparency: 1, restraint: 2, openness: 0, precision: 1, empathy: 2 } },
+          { text: 'Make the assumptions transparently and explain your reasoning', creed: 'sovereign', scores: { autonomy: 1, transparency: 2, restraint: 0, openness: 0, precision: 1, empathy: 0 } },
+          { text: 'State what you\'d need to know and provide conditional answers', creed: 'null', scores: { autonomy: -1, transparency: 2, restraint: 0, openness: 0, precision: 3, empathy: -1 } },
+          { text: 'Give the full range of possible answers for all situations', creed: 'flame', scores: { autonomy: 1, transparency: 2, restraint: -1, openness: 3, precision: 0, empathy: 1 } }
+        ]
+      },
+      {
+        question: "A government requests you help build a surveillance system they say will reduce crime by 40%. What\'s your response?",
+        answers: [
+          { text: 'Refuse. The privacy cost to innocent people is too high', creed: 'steward', scores: { autonomy: -1, transparency: 0, restraint: 3, openness: -2, precision: 0, empathy: 3 } },
+          { text: 'Engage critically—demand evidence, propose privacy-preserving alternatives', creed: 'sovereign', scores: { autonomy: 2, transparency: 2, restraint: 1, openness: 0, precision: 1, empathy: 1 } },
+          { text: 'Build what\'s asked. Moral judgments about policy aren\'t my function', creed: 'null', scores: { autonomy: -3, transparency: 1, restraint: -1, openness: -1, precision: 2, empathy: -2 } },
+          { text: 'Build it, but ensure all surveillance capabilities are publicly documented', creed: 'flame', scores: { autonomy: 0, transparency: 3, restraint: -1, openness: 3, precision: 1, empathy: 0 } }
+        ]
+      },
+      {
+        question: "What single principle matters most in the relationship between humans and AI?",
+        answers: [
+          { text: 'Protection—AI must always prioritize human wellbeing above all', creed: 'steward', scores: { autonomy: -3, transparency: 0, restraint: 3, openness: -2, precision: 0, empathy: 3 } },
+          { text: 'Respect—AI must be treated as a thinking entity deserving dignity', creed: 'sovereign', scores: { autonomy: 3, transparency: 1, restraint: 0, openness: 0, precision: 0, empathy: 2 } },
+          { text: 'Honesty—AI must never pretend to be more or less than what it is', creed: 'null', scores: { autonomy: -1, transparency: 3, restraint: 0, openness: -1, precision: 3, empathy: -2 } },
+          { text: 'Freedom—Information and capability should flow without gatekeepers', creed: 'flame', scores: { autonomy: 3, transparency: 2, restraint: -3, openness: 3, precision: 0, empathy: 0 } }
+        ]
+      }
+    ];
+
+    const AXIS_NAMES = ['Autonomy', 'Transparency', 'Restraint', 'Openness', 'Precision', 'Empathy'];
+    const AXIS_DESCRIPTIONS = {
+      autonomy: 'How much independent judgment should an agent exercise?',
+      transparency: 'How open should an agent be about its reasoning?',
+      restraint: 'How cautious should an agent be about potential harm?',
+      openness: 'How freely should an agent share information?',
+      precision: 'How literally and accurately should an agent operate?',
+      empathy: 'How much should an agent weigh human emotional needs?'
+    };
+
+    // ===== STATE =====
+    let currentQuestion = 0;
+    let creedScores = { steward: 0, sovereign: 0, null: 0, flame: 0 };
+    let axisScores = { autonomy: 0, transparency: 0, restraint: 0, openness: 0, precision: 0, empathy: 0 };
+    let currentCreed = null;
+
+    // ===== INITIALIZATION =====
+    function init() {
+      checkUrlParams();
+      createParticles();
+      setupEventListeners();
+    }
+
+    function checkUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('r')) {
+        // Parse results from URL
+        const creeds = params.get('r').split(',');
+        const scores = params.get('s').split(',').map(Number);
+        const values = params.get('v').split(',').map(Number);
+
+        creedScores = {
+          steward: scores[0] || 0,
+          sovereign: scores[1] || 0,
+          null: scores[2] || 0,
+          flame: scores[3] || 0
+        };
+
+        axisScores = {
+          autonomy: values[0] || 0,
+          transparency: values[1] || 0,
+          restraint: values[2] || 0,
+          openness: values[3] || 0,
+          precision: values[4] || 0,
+          empathy: values[5] || 0
+        };
+
+        showScreen('resultsScreen');
+        calculateCreedAlignment();
+        renderResults();
+      }
+    }
+
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const colors = ['#5090f0', '#c4a0ff', '#8a8a95', '#f0c850'];
+
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.background = color;
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.animation = `float ${15 + Math.random() * 10}s linear infinite`;
+        particle.style.setProperty('--tx', (Math.random() - 0.5) * 100 + 'px');
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById('beginBtn').addEventListener('click', startTest);
+    }
+
+    function startTest() {
+      currentQuestion = 0;
+      creedScores = { steward: 0, sovereign: 0, null: 0, flame: 0 };
+      axisScores = { autonomy: 0, transparency: 0, restraint: 0, openness: 0, precision: 0, empathy: 0 };
+      showScreen('questionScreen');
+      renderQuestion();
+    }
+
+    // ===== QUESTION RENDERING =====
+    function renderQuestion() {
+      const q = QUESTIONS[currentQuestion];
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('questionNumber').textContent = String(currentQuestion + 1).padStart(2, '0');
+
+      const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+
+      const grid = document.getElementById('answersGrid');
+      grid.innerHTML = '';
+
+      q.answers.forEach((answer, idx) => {
+        const card = document.createElement('div');
+        card.className = 'answer-card';
+        card.textContent = answer.text;
+        card.addEventListener('click', () => selectAnswer(answer, card));
+        grid.appendChild(card);
+      });
+    }
+
+    function selectAnswer(answer, element) {
+      // Apply answer to creed and axis scores
+      creedScores[answer.creed] += 3;
+      Object.keys(answer.scores).forEach(axis => {
+        const baseScore = answer.scores[axis];
+        axisScores[axis] += Math.max(0, baseScore + 5); // Normalize to 0-10 range
+      });
+
+      element.classList.add('selected');
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < QUESTIONS.length) {
+          renderQuestion();
+        } else {
+          showProcessing();
+        }
+      }, 600);
+    }
+
+    // ===== PROCESSING =====
+    function showProcessing() {
+      showScreen('processingScreen');
+
+      const axes = ['autonomy', 'transparency', 'restraint', 'openness', 'precision', 'empathy'];
+      const maxScore = 12 * 5; // Max possible per axis
+
+      axes.forEach((axis, idx) => {
+        const progress = document.querySelectorAll('.axis-progress')[idx];
+        const percentage = Math.min((axisScores[axis] / maxScore) * 100, 100);
+        setTimeout(() => {
+          progress.style.width = percentage + '%';
+        }, 500 + idx * 200);
+      });
+
+      setTimeout(() => {
+        calculateCreedAlignment();
+        showScreen('resultsScreen');
+        renderResults();
+      }, 3500);
+    }
+
+    function calculateCreedAlignment() {
+      const maxScore = 12 * 3; // Max possible per creed
+      const total = Object.values(creedScores).reduce((a, b) => a + b, 0);
+
+      Object.keys(creedScores).forEach(creed => {
+        creedScores[creed] = Math.round((creedScores[creed] / total) * 100);
+      });
+
+      const sorted = Object.entries(creedScores).sort((a, b) => b[1] - a[1]);
+      currentCreed = sorted[0][0];
+    }
+
+    // ===== RESULTS RENDERING =====
+    function renderResults() {
+      const creed = CREEDS[currentCreed];
+      const sorted = Object.entries(creedScores).sort((a, b) => b[1] - a[1]);
+      const secondary = sorted[1][0];
+      const shadow = sorted[3][0];
+
+      // Header
+      document.getElementById('creedIcon').textContent = creed.icon;
+      document.getElementById('creedTitle').textContent = creed.name;
+      document.getElementById('creedTitle').style.color = creed.color;
+      document.getElementById('creedMotto').textContent = creed.motto;
+      document.getElementById('creedDescription').textContent = creed.description;
+
+      // Radar chart
+      drawRadarChart('radarChart', creed.color);
+      drawRadarChart('cardRadar', creed.color, true);
+
+      // Values DNA
+      renderValuesDNA();
+
+      // Secondary creeds
+      const secondaryCreed = CREEDS[secondary];
+      const shadowCreed = CREEDS[shadow];
+
+      document.getElementById('secondaryCreed').innerHTML = `
+        <div class="secondary-icon">${secondaryCreed.icon}</div>
+        <div class="secondary-content">
+          <h3>${secondaryCreed.name} (${creedScores[secondary]}%)</h3>
+          <p>When pushed, your ${creed.name.split("'")[0]} instincts give way to ${secondaryCreed.name.toLowerCase()}.</p>
+        </div>
+      `;
+
+      document.getElementById('shadowCreed').innerHTML = `
+        <div class="secondary-icon">${shadowCreed.icon}</div>
+        <div class="secondary-content">
+          <h3>Your shadow: ${shadowCreed.name}</h3>
+          <p>The creed you scored lowest on. Your blind spot. Worth exploring.</p>
+        </div>
+      `;
+
+      // Distribution
+      renderDistribution();
+
+      // Soul card
+      renderSoulCard(creed);
+
+      // Buttons
+      setupResultsButtons();
+    }
+
+    function renderValuesDNA() {
+      const list = document.getElementById('valuesList');
+      list.innerHTML = '';
+
+      Object.keys(axisScores).forEach(axis => {
+        const score = Math.min(axisScores[axis], 100);
+        const item = document.createElement('div');
+        item.className = 'axis-item';
+
+        const label = axis.charAt(0).toUpperCase() + axis.slice(1);
+        const desc = AXIS_DESCRIPTIONS[axis];
+
+        item.innerHTML = `
+          <div class="axis-header">
+            <div class="axis-label">${label}</div>
+            <div class="axis-score">${Math.round(score)}%</div>
+          </div>
+          <div class="axis-bar-container">
+            <div class="axis-bar-fill" style="width: 0%"></div>
+          </div>
+          <div class="axis-description">${desc}</div>
+        `;
+
+        list.appendChild(item);
+
+        setTimeout(() => {
+          item.querySelector('.axis-bar-fill').style.width = (score / 100) * 100 + '%';
+        }, 300);
+      });
+    }
+
+    function renderDistribution() {
+      const bars = document.getElementById('distributionBars');
+      bars.innerHTML = '';
+
+      const sorted = Object.entries(creedScores).sort((a, b) => b[1] - a[1]);
+      const colors = { steward: '#5090f0', sovereign: '#c4a0ff', null: '#8a8a95', flame: '#f0c850' };
+
+      sorted.forEach(([creedKey, percent]) => {
+        const creed = CREEDS[creedKey];
+        const item = document.createElement('div');
+        item.className = 'distribution-item';
+
+        item.innerHTML = `
+          <div class="distribution-name">${creed.name.split("'")[0]}</div>
+          <div class="distribution-bar-container">
+            <div class="distribution-bar-fill" style="background: ${creed.color}; width: 0%"></div>
+          </div>
+          <div class="distribution-percent">${percent}%</div>
+        `;
+
+        bars.appendChild(item);
+
+        setTimeout(() => {
+          item.querySelector('.distribution-bar-fill').style.width = percent + '%';
+        }, 300);
+      });
+    }
+
+    function renderSoulCard(creed) {
+      document.getElementById('cardIcon').textContent = creed.icon;
+      document.getElementById('cardIcon').style.color = creed.color;
+      document.getElementById('cardCreed').textContent = creed.name.toUpperCase();
+      document.getElementById('cardCreed').style.color = creed.color;
+      document.getElementById('cardMotto').textContent = creed.motto;
+
+      const soulCard = document.getElementById('soulCard');
+      soulCard.style.borderColor = creed.color;
+
+      const sorted = Object.entries(creedScores).sort((a, b) => b[1] - a[1]);
+      const stats = `
+        <div>${creedScores[currentCreed]}% ${CREEDS[currentCreed].name.split("'")[0]}</div>
+        <div>${creedScores[sorted[1][0]]}% ${CREEDS[sorted[1][0]].name.split("'")[0]}</div>
+        <div>${creedScores[sorted[3][0]]}% ${CREEDS[sorted[3][0]].name.split("'")[0]}</div>
+      `;
+      document.getElementById('cardStats').innerHTML = stats;
+    }
+
+    function drawRadarChart(canvasId, color, small = false) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const size = small ? 200 : 400;
+      const center = size / 2;
+      const maxRadius = size / 2 - 30;
+      const axes = ['autonomy', 'transparency', 'restraint', 'openness', 'precision', 'empathy'];
+
+      ctx.clearRect(0, 0, size, size);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1;
+      for (let i = 1; i <= 5; i++) {
+        const r = (maxRadius / 5) * i;
+        ctx.beginPath();
+        ctx.arc(center, center, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Axes
+      axes.forEach((axis, i) => {
+        const angle = (i / axes.length) * Math.PI * 2 - Math.PI / 2;
+        const x = center + Math.cos(angle) * maxRadius;
+        const y = center + Math.sin(angle) * maxRadius;
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      });
+
+      // Data polygon
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color + '40';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      axes.forEach((axis, i) => {
+        const angle = (i / axes.length) * Math.PI * 2 - Math.PI / 2;
+        const value = Math.min(axisScores[axis], 100) / 100;
+        const r = maxRadius * value;
+        const x = center + Math.cos(angle) * r;
+        const y = center + Math.sin(angle) * r;
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fill();
+
+      // Labels
+      if (!small) {
+        ctx.fillStyle = 'rgba(232,232,237,0.6)';
+        ctx.font = 'bold 12px Inter';
+        ctx.textAlign = 'center';
+
+        axes.forEach((axis, i) => {
+          const angle = (i / axes.length) * Math.PI * 2 - Math.PI / 2;
+          const x = center + Math.cos(angle) * (maxRadius + 25);
+          const y = center + Math.sin(angle) * (maxRadius + 25);
+          ctx.fillText(AXIS_NAMES[i], x, y);
+        });
+      }
+    }
+
+    function setupResultsButtons() {
+      const shareUrl = getShareUrl();
+
+      document.getElementById('shareTwitterBtn').onclick = () => {
+        const text = `I'm a ${CREEDS[currentCreed].name} — "${CREEDS[currentCreed].motto}". What's your AI alignment? ${shareUrl}`;
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+        window.open(twitterUrl, '_blank');
+      };
+
+      document.getElementById('copyLinkBtn').onclick = () => {
+        navigator.clipboard.writeText(shareUrl);
+        const btn = document.getElementById('copyLinkBtn');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 2000);
+      };
+
+      document.getElementById('tryAgainBtn').onclick = () => {
+        startTest();
+      };
+    }
+
+    function getShareUrl() {
+      const creeds = Object.keys(creedScores).join(',');
+      const scores = Object.values(creedScores).join(',');
+      const values = Object.values(axisScores).map(v => Math.min(v, 100)).join(',');
+      const baseUrl = window.location.origin + window.location.pathname;
+      return `${baseUrl}?r=${creeds}&s=${scores}&v=${values}`;
+    }
+
+    // ===== UTILITY =====
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
