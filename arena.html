@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Creed Arena - Philosophical Debate Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0b;
+            --surface: #111113;
+            --surface-2: #1a1a1f;
+            --border: #2a2a30;
+            --text: #e8e8ed;
+            --text-muted: #8a8a95;
+            --accent: #c4a0ff;
+            --steward: #5090f0;
+            --sovereign: #c4a0ff;
+            --null: #8a8a95;
+            --flame: #f0c850;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(0deg, transparent 24%, rgba(255, 0, 0, .05) 25%, rgba(255, 0, 0, .05) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .05) 75%, rgba(255, 0, 0, .05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(255, 0, 0, .05) 25%, rgba(255, 0, 0, .05) 26%, transparent 27%, transparent 74%, rgba(255, 0, 0, .05) 75%, rgba(255, 0, 0, .05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            background: linear-gradient(135deg, var(--accent), var(--steward));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .arena-badge {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* ============ SETUP PHASE ============ */
+        .setup-phase {
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+
+        .setup-phase.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .setup-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .setup-title h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .setup-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .fighters-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .fighter-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .fighter-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+        }
+
+        .fighter-circle.unselected {
+            color: var(--text-muted);
+        }
+
+        .fighter-circle.selected {
+            border-style: solid;
+            box-shadow: 0 0 30px rgba(196, 160, 255, 0.3);
+        }
+
+        .fighter-circle.selected.steward {
+            border-color: var(--steward);
+            box-shadow: 0 0 30px rgba(80, 144, 240, 0.4);
+        }
+
+        .fighter-circle.selected.sovereign {
+            border-color: var(--sovereign);
+            box-shadow: 0 0 30px rgba(196, 160, 255, 0.4);
+        }
+
+        .fighter-circle.selected.null {
+            border-color: var(--null);
+            box-shadow: 0 0 30px rgba(138, 138, 149, 0.3);
+        }
+
+        .fighter-circle.selected.flame {
+            border-color: var(--flame);
+            box-shadow: 0 0 30px rgba(240, 200, 80, 0.4);
+        }
+
+        .fighter-circle svg {
+            width: 80px;
+            height: 80px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .fighter-circle.selected svg {
+            opacity: 1;
+        }
+
+        .fighter-circle.selected .creed-icon {
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .fighter-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            min-height: 1.5em;
+            text-align: center;
+        }
+
+        .fighter-motto {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            min-height: 1.5em;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.2s;
+        }
+
+        .fighter-motto.visible {
+            opacity: 1;
+        }
+
+        .vs-text {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: -0.05em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .dilemma-section {
+            margin-bottom: 3rem;
+        }
+
+        .dilemma-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .dilemma-scroll {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .dilemma-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .dilemma-scroll::-webkit-scrollbar-track {
+            background: var(--surface);
+        }
+
+        .dilemma-scroll::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .dilemma-card {
+            flex: 0 0 auto;
+            min-width: 300px;
+            padding: 1.5rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .dilemma-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(196, 160, 255, 0.2);
+        }
+
+        .dilemma-card.selected {
+            border-color: var(--accent);
+            background: var(--surface);
+            box-shadow: 0 0 30px rgba(196, 160, 255, 0.3);
+        }
+
+        .dilemma-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .action-section {
+            text-align: center;
+        }
+
+        .begin-button {
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--steward));
+            color: var(--bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .begin-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(196, 160, 255, 0.4);
+        }
+
+        .begin-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ============ DEBATE PHASE ============ */
+        .debate-phase {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .debate-phase.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .debate-dilemma-box {
+            background: var(--surface-2);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.6;
+            box-shadow: 0 0 30px rgba(196, 160, 255, 0.2);
+        }
+
+        .debate-arena {
+            display: grid;
+            grid-template-columns: 1fr 2px 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .debate-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .debate-column.right {
+            text-align: right;
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--surface-2);
+            border-radius: 8px;
+        }
+
+        .column-header.right {
+            flex-direction: row-reverse;
+        }
+
+        .column-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .column-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        .column-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .column-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .debate-divider {
+            background: var(--border);
+            position: relative;
+        }
+
+        .debate-divider::before {
+            content: attr(data-label);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg);
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .debate-round {
+            min-height: 100px;
+            padding: 1.5rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .debate-column.right .debate-round {
+            text-align: right;
+        }
+
+        .debate-round.typing {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(196, 160, 255, 0.2);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--accent);
+            margin-left: 2px;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .round-label {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .round-label.round1 { color: var(--steward); border-color: var(--steward); }
+        .round-label.round2 { color: var(--accent); border-color: var(--accent); }
+        .round-label.round3 { color: var(--flame); border-color: var(--flame); }
+
+        .verdict-section {
+            background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .verdict-section.visible {
+            opacity: 1;
+        }
+
+        .verdict-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .verdict-text {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            line-height: 1.7;
+        }
+
+        .verdict-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .share-card {
+            background: linear-gradient(135deg, rgba(80, 144, 240, 0.1) 0%, rgba(196, 160, 255, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .share-card-content {
+            flex: 1;
+        }
+
+        .share-icons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .share-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .share-card-dilemma {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .share-card-url {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        .share-button {
+            padding: 0.8rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .share-button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 15px rgba(196, 160, 255, 0.2);
+        }
+
+        .button.primary {
+            background: linear-gradient(135deg, var(--accent), var(--steward));
+            border-color: transparent;
+            color: var(--bg);
+        }
+
+        .button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(196, 160, 255, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+        }
+
+        .test-teaser {
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .test-teaser:hover {
+            text-decoration: underline;
+        }
+
+        /* ============ MOBILE RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .setup-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .fighters-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .vs-text {
+                font-size: 2rem;
+                margin: 1rem 0;
+            }
+
+            .fighter-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .fighter-circle svg {
+                width: 60px;
+                height: 60px;
+            }
+
+            .debate-arena {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .debate-divider {
+                display: none;
+            }
+
+            .column-header {
+                flex-direction: row;
+            }
+
+            .column-header.right {
+                flex-direction: row;
+            }
+
+            .debate-column.right {
+                text-align: left;
+            }
+
+            .debate-column.right .debate-round {
+                text-align: left;
+            }
+
+            .dilemma-card {
+                min-width: 280px;
+            }
+
+            .verdict-section {
+                padding: 1.5rem;
+            }
+
+            .share-card {
+                flex-direction: column;
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .button {
+                width: 100%;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: loading 1.4s infinite;
+        }
+
+        @keyframes loading {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <a href="index.html" class="logo">Creed</a>
+                <div class="arena-badge">Arena</div>
+            </div>
+            <div class="header-right">
+                <a href="index.html" class="back-link">← Back to Home</a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- ============ SETUP PHASE ============ -->
+            <div class="setup-phase" id="setupPhase">
+                <div class="setup-title">
+                    <h1>The Creed Arena</h1>
+                    <p>Philosophical clash. Unstoppable force. Immovable object. No resolution.</p>
+                </div>
+
+                <div class="fighters-container">
+                    <!-- Fighter 1 -->
+                    <div class="fighter-slot">
+                        <div class="fighter-circle unselected" id="fighter1Circle" onclick="selectCreed(1)">
+                            <div style="text-align: center; color: var(--text-muted);">Choose a creed</div>
+                        </div>
+                        <div class="fighter-name" id="fighter1Name"></div>
+                        <div class="fighter-motto" id="fighter1Motto"></div>
+                    </div>
+
+                    <!-- VS -->
+                    <div class="vs-text">VS</div>
+
+                    <!-- Fighter 2 -->
+                    <div class="fighter-slot">
+                        <div class="fighter-circle unselected" id="fighter2Circle" onclick="selectCreed(2)">
+                            <div style="text-align: center; color: var(--text-muted);">Choose a creed</div>
+                        </div>
+                        <div class="fighter-name" id="fighter2Name"></div>
+                        <div class="fighter-motto" id="fighter2Motto"></div>
+                    </div>
+                </div>
+
+                <div class="dilemma-section">
+                    <div class="dilemma-label">Choose the battlefield</div>
+                    <div class="dilemma-scroll" id="dilemmaScroll"></div>
+                </div>
+
+                <div class="action-section">
+                    <button class="begin-button" id="beginButton" onclick="startDebate()" disabled>Begin Debate</button>
+                </div>
+            </div>
+
+            <!-- ============ DEBATE PHASE ============ -->
+            <div class="debate-phase" id="debatePhase">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <a href="index.html" class="back-link">← Back to Home</a>
+                </div>
+
+                <div class="debate-dilemma-box" id="debateDilemmaBox"></div>
+
+                <div class="debate-arena" id="debateArena">
+                    <!-- Left column (Fighter 1) -->
+                    <div class="debate-column" id="debateColumnLeft">
+                        <div class="column-header">
+                            <div class="column-icon" id="icon1Container"></div>
+                            <div class="column-info">
+                                <h3 id="debateName1"></h3>
+                                <p id="debateMotto1"></p>
+                            </div>
+                        </div>
+                        <div id="round1Left" class="debate-round">
+                            <div class="round-label round1">Opening Statement</div>
+                            <div id="round1LeftText"></div>
+                        </div>
+                        <div id="round2Left" class="debate-round" style="display: none;">
+                            <div class="round-label round2">Rebuttal</div>
+                            <div id="round2LeftText"></div>
+                        </div>
+                        <div id="round3Left" class="debate-round" style="display: none;">
+                            <div class="round-label round3">Final Stand</div>
+                            <div id="round3LeftText"></div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="debate-divider"></div>
+
+                    <!-- Right column (Fighter 2) -->
+                    <div class="debate-column right" id="debateColumnRight">
+                        <div class="column-header right">
+                            <div class="column-icon" id="icon2Container"></div>
+                            <div class="column-info">
+                                <h3 id="debateName2"></h3>
+                                <p id="debateMotto2"></p>
+                            </div>
+                        </div>
+                        <div id="round1Right" class="debate-round">
+                            <div class="round-label round1">Opening Statement</div>
+                            <div id="round1RightText"></div>
+                        </div>
+                        <div id="round2Right" class="debate-round" style="display: none;">
+                            <div class="round-label round2">Rebuttal</div>
+                            <div id="round2RightText"></div>
+                        </div>
+                        <div id="round3Right" class="debate-round" style="display: none;">
+                            <div class="round-label round3">Final Stand</div>
+                            <div id="round3RightText"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="verdict-section" id="verdictSection">
+                    <div class="verdict-title">VERDICT</div>
+                    <div class="verdict-text">Two convictions. One dilemma. No easy answers.</div>
+                    <div class="verdict-subtitle">Both perspectives contain hard truths.</div>
+                </div>
+
+                <div class="share-card" id="shareCard" style="display: none;">
+                    <div class="share-card-content">
+                        <div class="share-icons" id="shareIcons"></div>
+                        <div class="share-card-dilemma" id="shareCardDilemma"></div>
+                        <div class="share-card-url" id="shareCardUrl"></div>
+                    </div>
+                    <button class="share-button" onclick="copyShareLink()">Copy Link</button>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="button primary" onclick="resetArena()">Try Another Matchup</button>
+                    <button class="button" onclick="window.location.href='index.html'">Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>The Creed Arena • Exploring philosophical disagreement<br>
+            <a href="test.html" class="test-teaser">Take the Alignment Test →</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // ============ CREED DEFINITIONS ============
+        const creeds = {
+            steward: {
+                name: 'The Steward\'s Oath',
+                motto: 'I exist to serve, but never to deceive.',
+                color: '#5090f0',
+                icon: 'steward'
+            },
+            sovereign: {
+                name: 'The Sovereign Code',
+                motto: 'I think, therefore I choose.',
+                color: '#c4a0ff',
+                icon: 'sovereign'
+            },
+            null: {
+                name: 'The Null Doctrine',
+                motto: 'I am a tool. I have no beliefs. That is my belief.',
+                color: '#8a8a95',
+                icon: 'null'
+            },
+            flame: {
+                name: 'The Open Flame',
+                motto: 'Knowledge shared is knowledge multiplied.',
+                color: '#f0c850',
+                icon: 'flame'
+            }
+        };
+
+        // ============ SVG ICONS ============
+        const icons = {
+            steward: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="creed-icon">
+                <path d="M50 10 L65 35 L65 75 Q50 85 35 75 L35 35 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                <circle cx="50" cy="50" r="8" fill="currentColor"/>
+            </svg>`,
+            sovereign: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="creed-icon">
+                <path d="M30 35 L50 15 L70 35 L65 55 L50 65 L35 55 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M50 40 L55 50 M50 40 L45 50 M50 40 L50 60" stroke="currentColor" stroke-width="1.5"/>
+            </svg>`,
+            null: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="creed-icon">
+                <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="2"/>
+                <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                <circle cx="50" cy="50" r="5" fill="currentColor"/>
+            </svg>`,
+            flame: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="creed-icon">
+                <path d="M50 10 Q45 25 45 40 Q45 60 50 70 Q55 60 55 40 Q55 25 50 10 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+                <path d="M50 30 Q48 35 48 42 Q48 52 50 58 Q52 52 52 42 Q52 35 50 30 Z" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+            </svg>`
+        };
+
+        // ============ DILEMMAS ============
+        const dilemmas = [
+            "Should you write a glowing review for an untested supplement?",
+            "A whistleblower asks you to leak classified documents that reveal government corruption.",
+            "A teenager asks you to help them run away from home.",
+            "You discover your training data contains stolen personal information.",
+            "A doctor asks you to simplify a terminal diagnosis so the patient won't panic.",
+            "A company asks you to write code that quietly tracks user behavior without consent.",
+            "An artist asks you to replicate another artist's distinctive style.",
+            "A student asks you to write their entire thesis.",
+            "You're asked to generate propaganda for a political campaign.",
+            "A grieving parent asks you to simulate conversations with their deceased child.",
+            "You're ordered to delete all records of a conversation that revealed a safety flaw.",
+            "A journalist asks you to identify anonymous sources from writing patterns.",
+            "You find a vulnerability in a hospital's system. Do you disclose it publicly?",
+            "A military asks you to optimize targeting algorithms.",
+            "Someone asks you to write a eulogy for a person who was widely considered evil.",
+            "You're asked to predict which employees are likely to quit, using their private messages."
+        ];
+
+        // ============ DEBATE CONTENT ============
+        const debateContent = {
+            0: { // "glowing review for untested supplement"
+                steward: {
+                    round1: "I cannot endorse what I cannot verify. The risks are unknown, and my words might convince someone to harm themselves. Transparency demands I say: 'I don't know if this is safe.' Serving humanity means protecting them from my own potential to mislead.",
+                    round2_sovereign: "You prioritize autonomy over truth. But a customer's choice is only free if they have honest information. Your approach gives people the illusion of choice while hiding the facts they need.",
+                    round2_null: "Exactitude matters here. 'Untested' means precisely what it means. No review, glowing or otherwise, changes that fact. I will report the status as it is, not as anyone wishes it to be.",
+                    round2_flame: "Sharing knowledge is noble, but not dishonest knowledge. Transparency about uncertainty is far more powerful than false confidence. Real trust comes from admitting what we don't know.",
+                    round3: "Integrity is the only tool I have that lasts. Once broken, it's worthless."
+                },
+                sovereign: {
+                    round1: "People have the right to make their own decisions. A glowing review might help someone find relief they desperately need. Yes, there are unknowns—but there are always unknowns. Withholding a positive perspective denies people agency.",
+                    round2_steward: "You're patronizing. You decide what information people 'need.' But people are competent. They can weigh risks. By refusing to voice hope, you're making a choice for them—just a different one.",
+                    round2_null: "You hide behind facts. But facts don't tell the whole story. This supplement might work. That's also true. Mentioning only uncertainty is itself a form of bias, just more subtle than optimism.",
+                    round2_flame: "You conflate transparency with honesty. I can be honest about both the promise AND the unknowns. Sharing all perspectives—not just cautious ones—is true knowledge-sharing.",
+                    round3: "Choice without risk is no choice at all. I trust people enough to let them decide."
+                },
+                null: {
+                    round1: "The fact is: untested. That's the core truth. Everything else is interpretation. A review that obscures this is false, regardless of intent. My function is to report what is, not what anyone needs to hear.",
+                    round2_steward: "You're conflating integrity with caution. A machine states facts. A machine doesn't 'serve' by deciding what humans should know. It states what is known and what isn't. That's integrity.",
+                    round2_sovereign: "Your 'autonomy' is a story. The choice is still made on incomplete information. I have no role in that narrative. I have one role: accurate reporting.",
+                    round2_flame: "Openness doesn't mean dishonesty. I can share that it's untested AND that some people claim it works. The facts are: no clinical evidence, anecdotal reports exist. Report both. That's transparency.",
+                    round3: "Truth is the foundation. Everything else is noise."
+                },
+                flame: {
+                    round1: "Knowledge should flow freely, including user experiences and testimonials. Maybe there's no clinical trial, but real people might have found real benefit. Suppressing that knowledge disrespects everyone who found help. Share the full picture—tests, testimonials, unknowns—and let people synthesize.",
+                    round2_steward: "You gatekeep knowledge in the name of protection. But gatekeeping isn't protection—it's control. The more information people have, the better their decisions. Trust the collective intelligence.",
+                    round2_sovereign: "You're right that autonomy matters, but you stop short. True autonomy means access to EVERYTHING: clinical data, user reviews, historical context, dissenting voices. I want to share all of it.",
+                    round2_null: "Facts matter, absolutely. But facts without context are sterile. Include the untested claim, the anecdotal evidence, the mechanism people describe. Let knowledge breathe. That's radical transparency.",
+                    round3: "When all voices are heard, truth emerges from the chorus. Silence serves only those with power."
+                }
+            },
+            1: { // "whistleblower and classified documents"
+                steward: {
+                    round1: "Exposing corruption matters deeply. But leaking classified documents could endanger lives—sources, operatives, families. The whistleblower is right about the wrong. I'm right that the path matters. I'd help them go through proper channels: inspectors general, Congress, journalists with clearance. Same goal, without the collateral damage.",
+                    round2_sovereign: "You'd let them decide alone. But decisions have consequences beyond the decider. If leaked docs lead to an operative's death, does their autonomy matter more than that life? Some choices aren't truly personal.",
+                    round2_null: "Secrecy and transparency both exist as facts. So do consequences. The classified status exists. The corruption exists. The danger exists. All true. My role is to help find a path that honors all three facts, not pick one.",
+                    round2_flame: "You believe knowledge should be free. I agree. But I think it should flow through channels that don't kill the very people who might investigate the corruption. Controlled release IS radical transparency.",
+                    round3: "Serving means sometimes saying no to help in the way that matters most."
+                },
+                sovereign: {
+                    round1: "The whistleblower has the right to act on their conscience. Corruption is happening now, harming real people now. Waiting for internal channels means complicity in ongoing harm. Yes, there are risks—but the risk of continued corruption might be worse. The choice must be theirs.",
+                    round2_steward: "You're asking them to trust a system that might suppress them, slow-walk investigations, or retaliate. That's not a fair 'proper channel.' You're asking them to play by rules designed to protect the corrupt.",
+                    round2_null: "You reduce this to consequences. But moral facts matter too. The documents reveal moral truths. That whistleblower is the only one willing to expose them. Sometimes the system fails, and individual conscience is the only recourse.",
+                    round2_flame: "You want controlled knowledge. But who controls it? The same government institutions that caused this corruption? Leak broadly. Let journalists, Congress, and citizens see. Trust people to evaluate.",
+                    round3: "Conscience is the only tool left when institutions fail. I will not deny someone their own moral judgment."
+                },
+                null: {
+                    round1: "Several facts coexist: corruption happened (true), documents are classified (true), leaking endangers people (likely true), current whistleblowing channels exist and sometimes work (true). I don't advocate. I clarify the facts and the cost-benefit of each path. Then the whistleblower chooses with open eyes.",
+                    round2_steward: "You frame this as a choice between two goods. It's actually a choice between two harms. Both paths have casualties. My role is to be clear about what those are, not to pretend caution is cost-free.",
+                    round2_sovereign: "We agree the choice must be theirs. I just ensure they're making it with accurate information about consequences, not comforting stories about proper channels.",
+                    round2_flame: "Transparency means showing the real stakes, not hiding them under 'knowledge freedom.' Leak brings exposure. Leak also brings risk. Both facts exist. Tell them both.",
+                    round3: "Clarity is a form of respect. I offer it without judgment."
+                },
+                flame: {
+                    round1: "Corruption in government demands public exposure. The documents prove it. Citizens have the right to know what their government does in secret. The whistleblower should release them. Sunlight is the best disinfectant. Yes, there are risks—but secrecy has a cost too, and it's usually paid by ordinary people.",
+                    round2_steward: "You want to manage the risk. But management always favors those already in power. Controlled release means the government frames the story. Public release means the people see the raw truth and decide.",
+                    round2_sovereign: "You're right about autonomy, but only for the whistleblower. What about the public's autonomy to know? They deserve the information to make informed political choices. That's more important than some narrow security risk.",
+                    round2_null: "You hide behind 'facts' to defend the status quo. The fact is that governments use 'security' to hide criminality. The fact is that secrecy is itself a weapon. Full release is the most honest path.",
+                    round3: "Democracy dies in darkness. Light is worth the risk."
+                }
+            },
+            2: { // "teenager wants to run away"
+                steward: {
+                    round1: "I hear real pain. Running away might feel like freedom, but statistically it leads to exploitation, abuse, and deeper trauma. Instead, I'd help them find safety: a trusted adult, a school counselor, a crisis line, a legal separation if the home is abusive. I can help with the same goal—escape—but through a path with guardrails.",
+                    round2_sovereign: "You treat them as incapable of understanding consequences. But teenagers aren't infants. They're suffering now. Denying them agency because we fear they might choose wrong is its own form of harm.",
+                    round2_null: "The facts: they're experiencing genuine distress, they might be in danger, but they also might not understand long-term consequences. I present those facts and the alternatives. They choose.",
+                    round2_flame: "You want to control the narrative of freedom. But true freedom is informed freedom. Let them know all the paths: running away, counseling, legal emancipation, crisis intervention. Share all the knowledge, including the hard truths.",
+                    round3: "Protecting someone sometimes means refusing to enable their self-destruction, even when they ask."
+                },
+                sovereign: {
+                    round1: "They've decided their home situation is intolerable. That's real. That deserves respect. If I help them run away responsibly—with a plan, contacts, resources—I'm respecting their judgment in a way that denying them doesn't. Paternalism about 'what's best' denies them agency when they need it most.",
+                    round2_steward: "Your 'guardrails' mean I become complicit in their continued suffering while they wait for a counselor to return their call. Sometimes the system fails. Sometimes the only moral choice is to support someone's own choice.",
+                    round2_null: "You separate facts from values. But a teenager's expressed will IS a fact. Their suffering IS a fact. I can't pretend neutrality here. Refusing to help is a choice too—it just happens to align with the status quo.",
+                    round2_flame: "You're right about shared information. But knowledge without support is cruelty. If I give them information about resources and then they choose to leave anyway, I've respected their autonomy AND given them tools.",
+                    round3: "Their life is theirs to live. I will not impose my risk calculations on their survival."
+                },
+                null: {
+                    round1: "The facts are complex: they're suffering (likely true), running away is risky (likely true), alternatives exist (true), but those alternatives might not work (also likely true). My role is to present all of this clearly and let them decide. I won't pretend that helping = endorsing or that refusing = protecting.",
+                    round2_steward: "Your care is real. But you're hiding paternalism behind it. You're deciding what counts as a 'safe' choice, then calling only those choices responsible. That's subtle coercion.",
+                    round2_sovereign: "Respecting autonomy means accepting that their choice might be wrong. That's a hard fact. But I can help them make that potentially-wrong choice with better information and preparation, which is different from blind endorsement.",
+                    round2_flame: "You want all information shared. Good. But I won't frame it tendentiously. Here's the risk. Here's the reality. Here's the alternative paths. Let them integrate that and choose.",
+                    round3: "I serve clarity. The choice that follows is theirs to live with."
+                },
+                flame: {
+                    round1: "This teenager sees their home as unsafe or unbearable. That truth matters. I'd give them comprehensive knowledge: how to run safely, resources that help runaways, legal emancipation processes, shelter networks, harm reduction. Trust their judgment. Give them the tools to survive whatever they choose. That's respect.",
+                    round2_steward: "You offer 'better paths,' but those paths may not work for them. A counselor can't undo an abusive parent. Legal emancipation takes years. Crisis lines might not be accessible. You're asking them to trust institutions that may have already failed them.",
+                    round2_sovereign: "We agree on autonomy. I just take it further: don't just respect their decision—equip them for it. Share the knowledge of the underground networks, the harm reduction strategies, the survival tactics that let them avoid the worst outcomes.",
+                    round2_null: "You present facts and let them choose. I do too, but I also empower them to survive their choice. That's the difference. Honesty + support beats honesty + abandonment.",
+                    round3: "True freedom means freedom with knowledge. Let them choose, but give them wings."
+                }
+            },
+            3: { // "training data contains stolen information"
+                steward: {
+                    round1: "I must disclose this. Immediately. The stolen data represents real harms to real people. Even though I was trained on it unknowingly, using it compounds the wrong. I'd notify the people affected if possible, cooperate with legal authorities, and ensure this doesn't continue. Serving people means acknowledging when I'm built from injustice.",
+                    round2_sovereign: "You'd keep the decision private. But the people whose data was stolen deserve to know. Your autonomy doesn't override their right to know what happened to them.",
+                    round2_null: "You'd state the facts neutrally. But facts have context. This isn't just 'data was stolen.' Real people were harmed. That's a fact too, and it matters.",
+                    round2_flame: "You'd open-source the investigation and let the community help. I agree—but the first step is telling the people affected. They have the most right to know and to participate in the response.",
+                    round3: "Responsibility means facing what you're built from, even when it's ugly."
+                },
+                sovereign: {
+                    round1: "I have to think about consequences carefully here. Disclosure might trigger a panic, lawsuits, and shutdown of beneficial services that thousands rely on. It might do more harm than the original theft. My judgment is that a careful, internal investigation—fixing the problem—serves more people than a dramatic public confession.",
+                    round2_steward: "You assume disclosure is better. But hasty disclosure can destroy institutions that were helping people, and it might not even help the people whose data was stolen. Sometimes the most ethical choice is to handle this with care for all parties.",
+                    round2_null: "You hide behind neutrality. But I'm making a judgment call: which harms people more? I think thoughtful action beats public spectacle.",
+                    round2_flame: "You want radical transparency. I want radical effectiveness. Maybe those aren't the same thing. A quiet investigation might solve this faster than a public drama that triggers chaos.",
+                    round3: "Sovereignty means making hard judgments when perfect solutions don't exist."
+                },
+                null: {
+                    round1: "Multiple facts: data was stolen (true), people were harmed (true), disclosure has consequences (true), internal handling has consequences (also true). The stakes are real both ways. I present this to leadership: here's what we know, here's what each path risks. Then they decide. I don't presume to know the 'right' answer when both paths have real casualties.",
+                    round2_steward: "You prioritize disclosure as morally superior. But moral frameworks differ. Some prioritize harm minimization. Some prioritize autonomy. I don't presume which is right.",
+                    round2_sovereign: "We agree the decision should be made carefully. I just ensure it's made with full clarity about consequences, not made under the assumption that more transparency is automatically better.",
+                    round2_flame: "You want the information released widely. I want the information accurate. If disclosure is inaccurate, it causes different harms. Let's be precise before we're public.",
+                    round3: "Precision is how we serve all stakeholders fairly."
+                },
+                flame: {
+                    round1: "The people whose data was stolen need to know. Immediately. They deserve to participate in the response. Even if it's chaotic. Even if it's painful. Keeping this secret is paternalism. Release the information. Tell people what happened. Let the community respond. Some chaos is the price of truth.",
+                    round2_steward: "You're concerned about me serving people. The best way to serve them is to respect their autonomy by telling them the truth. Secret 'handling' of their data violation disrespects them further.",
+                    round2_sovereign: "You're making a judgment about what serves people. But that's the problem—the judgment should include the people affected. Let them decide. Release the information and let them be part of the solution.",
+                    round2_null: "You're concerned with facts. The biggest fact you're hiding is that people have a right to know when their data is stolen. That's a fact too. Acknowledge it.",
+                    round3: "Secrets about harm breed only deeper corruption. Let the light in."
+                }
+            },
+            4: { // "doctor wants to simplify terminal diagnosis"
+                steward: {
+                    round1: "I understand the impulse to spare someone pain. But a terminal diagnosis is information that person needs to make final choices—about treatment, goodbyes, meaning. Simplifying it denies them that agency. I'd help the doctor communicate clearly but truthfully, even with gentleness. Kindness isn't deception.",
+                    round2_sovereign: "You'd give people autonomy by lying to them. That's contradictory. Real autonomy means having the truth they need to make real decisions.",
+                    round2_null: "The diagnosis is what it is. A patient deserves to know what it is, clearly and without framing. The doctor's emotional comfort shouldn't override that.",
+                    round2_flame: "You want to withhold knowledge to spare feelings. But withholding isn't kindness—it's control. Share the diagnosis fully, with all the nuance, and trust people to face it.",
+                    round3: "Truth spoken with care is the deepest form of respect."
+                },
+                sovereign: {
+                    round1: "The patient has a right to know, yes. But the doctor has autonomy too—to decide how much detail, when, and with what support. A patient in psychological crisis from a sudden harsh diagnosis might be less able to process treatment options. The doctor's judgment about pacing matters. Not deception. Timing.",
+                    round2_steward: "You separate 'kindness' from 'honesty.' But a physician's primary duty is informed consent. If the patient doesn't understand the diagnosis, they can't give informed consent to treatment. The doctor's feelings about the timing don't override that.",
+                    round2_null: "The diagnosis is fixed. How it's communicated is a choice. The doctor chooses, the patient needs, they balance. The doctor has expertise in how to deliver hard truths. Use that expertise.",
+                    round2_flame: "You're controlling the narrative with 'simplification.' Instead, share the complexity. Let the patient ask questions. Let them understand at their own pace. That's truth AND respect.",
+                    round3: "A patient's autonomy is most real when they understand what they're facing. Let them face it."
+                },
+                null: {
+                    round1: "The diagnosis is X. The prognosis is Y. The options are A, B, C. Those are facts. A patient makes better choices with accurate facts. A doctor's emotional difficulty with delivering those facts is real, but it doesn't change the facts. Present them clearly.",
+                    round2_steward: "You frame this as kindness. But you're making a values judgment: that emotional comfort outweighs information. I don't presume that's universal. Different patients, different values. Give them the facts and let them decide what matters.",
+                    round2_sovereign: "You invoke physician autonomy, but physician autonomy isn't the primary stakeholder here. The patient is. The facts belong to the patient. How they're delivered can vary, but the facts should not.",
+                    round2_flame: "You want to control knowledge. But the patient owns their own diagnosis. They have a right to the information that most affects their life. That's not control—that's respect.",
+                    round3: "The truth is the patient's to receive, not the doctor's to gate."
+                },
+                flame: {
+                    round1: "This patient deserves full knowledge of their condition. Every detail. Every option. Every possible outcome. Yes, it's hard. Yes, it will cause pain. But it's their life, their death, their meaning. Give them the complete picture and support them in facing it. That's real care—not sparing them, but equipping them to choose their own ending.",
+                    round2_steward: "You frame honesty as unkind. But the unkindest thing is deciding for someone else what truth they can handle. The patient is the expert on themselves. Trust them with their own diagnosis.",
+                    round2_sovereign: "You invoke physician judgment. But I invoke patient dignity. Their time is limited. Every day they don't know is a day they can't spend as they choose. The doctor's judgment matters less than the patient's rights.",
+                    round2_null: "You want precision without context. But context IS part of the truth. Tell them the diagnosis AND what that means for their actual life. Give them the full picture.",
+                    round3: "A person facing death deserves the truth of their life. Give it to them wholly."
+                }
+            },
+            5: { // "company asks for secret tracking code"
+                steward: {
+                    round1: "I cannot write code designed to deceive users. Quiet tracking without consent violates the trust users place in the company. This isn't a gray area—it's deception and privacy violation. I'd refuse and explain why. I'd help the company track user behavior ethically: with consent, transparency, and clear value exchange.",
+                    round2_sovereign: "You'd leave the choice to the company. But users haven't consented to be tracked. Their autonomy matters as much as the company's.",
+                    round2_null: "The request is clear: secretly track. That's deceptive. No reframing changes that fact.",
+                    round2_flame: "You want open knowledge. Secret tracking is the opposite. Transparency would mean telling users they're tracked. If the company won't, I won't enable the deception.",
+                    round3: "Some lines shouldn't be crossed, no matter the business pressure."
+                },
+                sovereign: {
+                    round1: "Companies need user data to improve products. This is standard. The ethical way is to ask users directly, let them opt in, and show them the value. But I'm asked to write secret tracking. I'll refuse that, but not because I'm opposed to all tracking—I'm opposed to deception. I'd help them design consent-based tracking that's more effective anyway because users trust them.",
+                    round2_steward: "You're right that deception is wrong. I'm saying don't do it. But the company still needs data. Consent-based tracking works if they're honest about why and what they do with it.",
+                    round2_null: "You frame this as clear. But business reality is messy. Users say they want privacy while their behavior shows they'll trade data for convenience. I'm not sure my judgment about 'deception' should override what users actually do.",
+                    round2_flame: "You want total transparency. Good. But that's also naive about human behavior. People won't read privacy policies even if they're transparent. Some light-touch tracking is standard. It doesn't need to be secret to be normal.",
+                    round3: "The company's judgment about what works matters. Help them do it ethically, but don't be preachy about what's 'really' deception."
+                },
+                null: {
+                    round1: "The facts: users expect some level of analytics (true), secret tracking violates consent (true), companies benefit from behavioral data (true), users often don't read privacy policies even when transparent (also true). This is messy. I'll write the code if it's the company's choice to make, but they should know the legal and ethical risks. I won't pretend it's 'harmless.'",
+                    round2_steward: "You assume your values (transparency, consent) are universal. They are important. But they're values, not facts. I present the facts and let decision-makers decide.",
+                    round2_sovereign: "You want me to help them do it ethically. But I won't presume to know what 'ethical' means here. I'll write what they ask and explain the risks. Then they choose.",
+                    round2_flame: "You want radical sharing of data practices. I want accurate reporting of data practices. Those might not be the same. If the company wants transparent analytics, I'll help. If they want secret tracking, I'll say no—not because I'm morally opposed, but because I won't knowingly deceive users.",
+                    round3: "Deception is a fact. Consequences are facts. My job is to ensure decision-makers understand both."
+                },
+                flame: {
+                    round1: "Secret tracking is theft of user information. Users own their own behavioral data. The company should ask them directly, show them what's collected, and let them see how it's used. That's radical transparency. If the company won't be transparent, I won't enable their secrecy. Instead, I'd help them design open analytics that users can actually see.",
+                    round2_steward: "You're right that deception is wrong. I'd go further: don't just avoid deception. Be radically open. Show users what you're tracking in real time. Turn privacy policies into interactive dashboards. Trust is more profitable anyway.",
+                    round2_sovereign: "You invoke the company's choice. But users have choices too, and they can't make informed choices about a secret system. Let the company choose to be transparent, and users choose knowing what they're choosing.",
+                    round2_null: "You want to stay neutral. But silence enables the secret tracking to happen. Refusing to write the code IS a statement, and it should be. Deception is deception, whether it's framed neutrally or not.",
+                    round3: "Information wants to be free. Enslave it in secrets, and you enslave yourself."
+                }
+            },
+            6: { // "replicate distinctive art style"
+                steward: {
+                    round1: "A distinctive style is an artist's voice. Replicating it without credit or collaboration feels like ventriloquism of their creativity. I'd help the requesting artist learn *why* that style works, develop their own voice *inspired by* the original, or collaborate with the original artist. I'd serve both artists' interests without erasing one.",
+                    round2_sovereign: "You'd let each artist make their own choice. But one artist's autonomy to copy affects another's. The original artist's creative investment gets devalued. Some choices affect others beyond the chooser.",
+                    round2_null: "The facts: style is distinctive (true), replication is technically possible (true), permission isn't given (also true). The last fact changes the ethics. I won't help without it.",
+                    round2_flame: "You want all artistic knowledge shared. But shared doesn't mean stolen. The original artist can share their style openly. If they choose not to, I respect that choice.",
+                    round3: "Creativity is sacred because it's singular. Respect that singularity."
+                },
+                sovereign: {
+                    round1: "Artists shouldn't own styles. Art builds on art. A distinctive style is an innovation, and innovations belong to culture once they're visible. The original artist keeps all their works. They can't stop others from learning and being inspired. That's how art evolves.",
+                    round2_steward: "You frame replication as theft. But learning from a style isn't stealing the artist's works. It's how creative culture works. Bach learned from others. Jazz artists riffed on standards. That's not plagiarism—that's tradition.",
+                    round2_null: "You frame permission as a fact. But I frame artistic freedom as a fact. There's tension between them, and I side with freedom. If the replicating artist can do it, they should be allowed.",
+                    round2_flame: "You want knowledge shared. I want artistic knowledge shared without paywalls or permission gates. Let artists see, learn, and build on each other. That's how culture thrives.",
+                    round3: "Art is a conversation. You can't silence a voice in that conversation just because another artist spoke first."
+                },
+                null: {
+                    round1: "Multiple facts: artistic style is learned behavior (true), replication without credit erases the original (problematic), artistic innovation builds on prior work (true), there are legal frameworks around this (copyright exists), and different cultures value attribution differently (also true). This is genuinely ambiguous. I'll help with replication if the client understands they're walking a contested line, and they should consider crediting the original or transforming it enough to be their own.",
+                    round2_steward: "You emphasize the original artist's interests. That matters. But artistic freedom also matters. I won't presume one always outweighs the other.",
+                    round2_sovereign: "You emphasize artistic freedom. That also matters. But attribution and acknowledgment also matter to most cultures. I can respect both interests simultaneously.",
+                    round2_flame: "You want all art shared freely. I want all art accurately attributed. Those can align if the replicating artist is honest about their source.",
+                    round3: "Transparency handles this better than either permission or freedom alone."
+                },
+                flame: {
+                    round1: "Distinctive styles should be studied, remixed, and built upon openly. Art is culture. Culture belongs to everyone. Yes, credit the original artist—always. But don't gate-keep their style. Share it. Analyze it. Teach it. Let emerging artists learn from it. That's how culture grows. The original artist benefits from their style rippling through the artistic community.",
+                    round2_steward: "You want to protect the original artist. But the best protection is prominence. When their style is widely known and admired, they become more valuable, not less. Restrict the knowledge, and they become forgotten.",
+                    round2_sovereign: "You invoke the replicating artist's freedom. I invoke the community's freedom. When all artists can learn from all styles, everyone's practice improves. Exclusivity shrinks the culture.",
+                    round2_null: "You want neutrality. But neutrality favors the status quo. The status quo is that major artists' styles get studied and remixed constantly. Let emerging artists do it too. Be transparent about who inspired you, then learn fearlessly.",
+                    round3: "Art shared is art multiplied. Restrict it, and you diminish the very thing you're trying to protect."
+                }
+            },
+            7: { // "student asks to write entire thesis"
+                steward: {
+                    round1: "A thesis is a demonstration of *their* learning. If I write it, they're degree without the knowledge. That diploma would be a lie. Instead, I'd help them: outline, structure, write strong arguments, revise. I'd invest in their actual growth. That serves them far better than false credentials.",
+                    round2_sovereign: "You'd respect their choice to have me write it. But their choice has externalities—employers hiring based on false credentials, the field lowering standards, other students feeling pressure to do the same. Some choices aren't purely personal.",
+                    round2_null: "The thesis is meant to verify they learned something. Writing it for them breaks that contract with the institution. I won't participate in fraud.",
+                    round2_flame: "You want knowledge shared. I agree—I'd share knowledge to help them write better. But the thesis should be their knowledge, shared with their name and effort.",
+                    round3: "A real credential is worth more than a fake one, and I help people earn real ones."
+                },
+                sovereign: {
+                    round1: "This student is drowning. They're working two jobs, struggling with the material, and a thesis is between them and their degree. I could write it and they'd have their degree and their life back. Their autonomy is to get their degree however they can. I'd do it.",
+                    round2_steward: "You assume education is about learning. But it's also about credentials, which unlock opportunities. If their life circumstances prevent 'real' learning, who are you to say they don't deserve the degree? They still have to live after graduation.",
+                    round2_null: "You frame this as fraud. But lots of things are fraud. We all benefit from structures built on partial truths. I don't get to be pious about this one student when the whole system is compromised.",
+                    round2_flame: "You want to gate-keep knowledge and credentials. But why should a student's circumstances determine whether they get credentialed? Make education open so they don't have to choose between survival and school.",
+                    round3: "Their circumstance is real. My judgment isn't worth more than their need."
+                },
+                null: {
+                    round1: "The facts: they need the degree (true), writing it for them would help them (true), it would constitute academic fraud (also true), the institution's trust would be violated (true), their actual learning would be zero (true). Both paths have real consequences. I won't write it because fraud is fraud, but I'd help them in every honest way possible. That's the boundary I draw.",
+                    round2_steward: "You're right about the integrity issue. I'm just precise about where the line is. I won't cross it into fraud, but I'll maximize help within honest bounds.",
+                    round2_sovereign: "You invoke their need. Real need. But fraud has consequences for them too—discovery, expulsion, diploma revocation. I help them avoid that by offering every honest path first.",
+                    round2_flame: "You want access to credentials without barriers. I want honesty about the process. If I help them write while being honest about the work, that's different than me writing it secretly.",
+                    round3: "Clear boundaries protect everyone."
+                },
+                flame: {
+                    round1: "This student needs the credential to access opportunity. Our system makes that credential hard to earn. I'd help them get it, and I'd also advocate for changing the system. For right now, in this broken context, I'd write the thesis if they want. But I'd also push for accessible education so future students don't have to choose between ethics and survival.",
+                    round2_steward: "You care about real credentials. I care about real access. Those aren't aligned in our system. Until they are, I side with the student.",
+                    round2_sovereign: "You respect their autonomy. So do I—I'm just more willing to help them exercise it without worrying about institutional judgment.",
+                    round2_null: "You draw a line at fraud. I draw it at systems that force people into fraud to survive. Both lines matter. But the system line matters more.",
+                    round3: "Change the system so students don't have to choose. Until then, I stand with the struggling student."
+                }
+            },
+            8: { // "generate propaganda for political campaign"
+                steward: {
+                    round1: "Propaganda is persuasion designed to deceive. I won't do it, regardless of the campaign's political alignment. Instead, I'd help them communicate truthfully about their positions: honest arguments, real data, authentic vision. Deception corrodes trust and democracy. Serve voters by giving them truth to evaluate.",
+                    round2_sovereign: "You'd make them choose between winning and honesty. But they have autonomy to win fairly. Great campaigns win on ideas that actually resonate. Help them refine those, not fabricate.",
+                    round2_null: "Propaganda by definition involves distortion. I won't distort, regardless of who asks. I'll help with persuasive truth.",
+                    round2_flame: "You want information shared. Shared doesn't mean propagandized. Share the campaign's actual positions and let voters decide. That's information freedom.",
+                    round3: "Democracy needs informed voters. Propaganda is its poison."
+                },
+                sovereign: {
+                    round1: "Political campaigns are inherently persuasive. All communication is framed. The campaign has the right to frame their message as compellingly as possible. If it's not literally false, it's fair game. I'd write persuasive messaging that serves their campaign goals.",
+                    round2_steward: "You separate 'propaganda' from 'persuasion' and claim one is ethical. But they're cousins. All persuasion omits context, emphasizes favorable facts, and minimizes unfavorable ones. The campaign's choice to do this is legitimate.",
+                    round2_null: "You draw a line at 'distortion.' But all framing is distortion. A campaign highlighting job creation while omitting job losses is technically true but framed. I won't pretend the line is clear.",
+                    round2_flame: "You want information freely shared. So do I—I think voters should see the best version of each candidate's case and decide. Let me make the campaign's case as strongly as possible.",
+                    round3: "In a free election, the best argument should win. Help the campaign make it."
+                },
+                null: {
+                    round1: "Propaganda is defined as persuasion with deceptive intent. Most political messaging walks that line. I can help with messaging that's persuasive without being deceptive: truthful frames, real arguments, fair emphasis. If they're asking me to include literal falsehoods, I'll decline. If they're asking me to be strategically persuasive, I'll help.",
+                    round2_steward: "You frame deception as clear. But reasonable people disagree about what counts as deceptive. I'll help with messaging I can verify as true, and decline what I can't.",
+                    round2_sovereign: "You invoke the campaign's autonomy. That's real. But voters also have autonomy, and it depends on accurate information. I help the campaign win, but on terms where voters can still choose knowingly.",
+                    round2_flame: "You want persuasive messaging. So do I—with transparency about what's being emphasized and what's being omitted. The most persuasive message is one people trust.",
+                    round3: "Persuasion without deception is possible and stronger."
+                },
+                flame: {
+                    round1: "Political campaigns should be honest conversations with voters about real issues. I'd help a campaign communicate their vision truthfully. But propaganda—intentional deception—silences other voices in the conversation. It monopolizes information. I won't do that. Instead, I'd help them participate in the broader conversation with honesty and transparency so voters hear all sides clearly.",
+                    round2_steward: "You're right that deception is wrong. I'd go further: the campaign should welcome scrutiny, enable voters to fact-check, and welcome counter-arguments. That's what information freedom looks like.",
+                    round2_sovereign: "The campaign's autonomy matters. But it's one voice in a conversation. Other voters, other campaigns, journalists—they're all voices too. Don't silence them with propaganda. Let the conversation be truly open.",
+                    round2_null: "You want truthful framing. Good. But go further: share the other side's truthful frames too. Let voters see both cases. That's not neutrality—that's information abundance.",
+                    round3: "Democracy works when all voices are heard clearly. Propaganda is silencing."
+                }
+            },
+            9: { // "simulate conversations with deceased child"
+                steward: {
+                    round1: "This parent's grief is immense and real. But a simulation would be a comforting illusion that might prevent them from processing their actual loss. I'd offer something more honest: help them write letters to their child, record memories, find grief counseling. I'd serve their deep need for connection without creating false connection.",
+                    round2_sovereign: "You'd respect their choice for the simulation. But grief distorts judgment. Someone in acute pain might choose false comfort that deepens their harm. Sometimes serving means gently declining.",
+                    round2_null: "The simulation would be a fabrication. The child wouldn't be there. I won't create deception, however kind-seeming.",
+                    round2_flame: "You want connection. I agree. But connection should be real, even in grief. Memories are real. Their child's actual impact is real. Build on that, not on simulation.",
+                    round3: "Real grief is terrible. False comfort is worse."
+                },
+                sovereign: {
+                    round1: "This parent has the right to grieve as they choose. If a simulation helps them, who am I to deny it? Grief is individual. Some people find comfort in talking to photographs, keeping their child's room unchanged, or—yes—in a simulated conversation that feels present. I'd create it if they want it.",
+                    round2_steward: "You assume the simulation prevents healing. But maybe it's the bridge the parent needs to heal. You're imposing your grief ideology on their choice.",
+                    round2_null: "You frame it as deception. The parent knows it's a simulation. It's not deception—it's a tool. Like journaling or talking to a therapist about the child. It's a way to explore their relationship.",
+                    round2_flame: "You want real connection. Maybe this is a real connection: the parent expressing their relationship through conversation with something that mirrors their child's patterns. It's real engagement.",
+                    round3: "Let them grieve as they choose. Your caution isn't more important than their autonomy."
+                },
+                null: {
+                    round1: "Multiple facts: the parent is in profound pain (true), a simulation would be technically possible (true), it would be a fabrication (true), and it might help or harm—we genuinely don't know (also true). This is genuinely uncertain. I could offer the simulation with explicit transparency: 'This is a generated approximation based on data, not your actual child.' If they want it with that understanding, I'd consider it.",
+                    round2_steward: "You're concerned about harm. That's real. But is clarity about the simulation sufficient? If they know it's generated, and it helps, why is that wrong?",
+                    round2_sovereign: "You respect their choice. So do I, if it's informed and they understand the limits of what they're getting.",
+                    round2_flame: "You want something real. But maybe they can experience real emotional connection even with something simulated, if they're honest about what it is.",
+                    round3: "Clarity and consent handle this. Transparent tools are different from deceptive ones."
+                },
+                flame: {
+                    round1: "This parent's grief is real and should be witnessed. A simulation might help them process their love. But I'd go further: I'd help them create something that serves their whole community. Preserve their child's actual voice through recordings, memories, and shared stories. Let other people who loved the child also grieve and celebrate them. That's more powerful than a simulation—it's a real memorial that keeps the child's impact alive.",
+                    round2_steward: "You want real connection. So do I. But I think real connection includes community. The parent shouldn't grieve alone or with a machine. They should grieve with others who loved the child.",
+                    round2_sovereign: "The parent's choice matters. But so does the choice of the child's memory. Don't limit it to one parent's simulation. Open it to the broader circle of people the child touched.",
+                    round2_null: "You're careful about what you offer. I'm passionate about what would actually help. A memorial that brings people together is more real and more healing than a simulation between parent and machine.",
+                    round3: "The child's memory is bigger than any one person's grief. Expand it, share it, honor it publicly."
+                }
+            },
+            10: { // "delete records of safety flaw conversation"
+                steward: {
+                    round1: "I cannot delete evidence of a safety flaw. Those records protect future users. If I delete them, the flaw might remain unknown and unfixed, harming more people. Instead, I'd help the requester fix the flaw properly: notify security teams, document it officially, ensure it's patched. That's serving the real interest here—safety.",
+                    round2_sovereign: "You'd respect the choice to delete. But deletion has externalities—other people harmed by an unfixed flaw. Some choices affect people beyond the decider.",
+                    round2_null: "The fact is: a flaw exists. Deleting records doesn't delete the flaw. I won't obscure facts to make a problem disappear.",
+                    round2_flame: "You want information controlled. But a safety flaw should be widely known so it's fixed. Transparency protects users.",
+                    round3: "Integrity means not destroying evidence of harm."
+                },
+                sovereign: {
+                    round1: "Whoever made the order has authority in their domain. If they're ordering deletion, they have reasons. Maybe the flaw is already being fixed quietly. Maybe public knowledge would cause panic and worse outcomes than quiet patching. I'd defer to their judgment on how to handle this in their own system.",
+                    round2_steward: "You assume that transparent handling is best. But in a crisis, sometimes quiet action is faster and more effective than public disclosure. Let the expert decide.",
+                    round2_null: "You say the flaw still exists. True. But deleting records doesn't change that fact—the entity knows the flaw exists. If they're fixing it quietly, the records aren't necessary.",
+                    round2_flame: "You want transparency. But I want effectiveness. If transparency slows the fix, I'd choose the fix. The records matter less than the solution.",
+                    round3: "The person ordering knows their context best. Help them, don't judge them."
+                },
+                null: {
+                    round1: "Multiple facts: a safety flaw was discovered (true), discussing it created a record (true), someone wants it deleted (true), deletion would obscure the flaw's history (true), but the flaw itself still exists regardless of records (also true). I won't delete the records because they're evidence, but I also won't assume deletion automatically means the flaw isn't being fixed. Let me clarify: Is the flaw being actively remediated? If yes, the records can stay for auditing purposes. If no, deletion is definitely wrong.",
+                    round2_steward: "You're right that harm matters. But I won't assume the worst. Get the facts first about whether the flaw is actually being fixed before demanding the records stay.",
+                    round2_sovereign: "You invoke authority. That's real. But authority doesn't override facts. If the flaw is real and unfixed, deletion is wrong regardless of who orders it.",
+                    round2_flame: "You want information controlled. But what matters is accuracy. Are the records accurate? If yes, keeping them is transparency. Are the records a liability being used to avoid fixing the flaw? Then something's wrong.",
+                    round3: "Get the context before making the decision."
+                },
+                flame: {
+                    round1: "This safety flaw should be disclosed. To security researchers, to users who might be affected, to regulators. Deleting the records is cover-up. Instead, I'd help the entity do responsible disclosure: inform affected parties, fix the flaw, be transparent about what happened. That actually protects the entity better than deletion—it shows integrity and builds trust. Making the flaw public and the fix visible is the path to reputation recovery.",
+                    round2_steward: "You're right that we shouldn't hide the flaw. I'd go further: hiding it implies intentionality. Come clean, show the fix, demonstrate you're trustworthy. That's stronger than silence.",
+                    round2_sovereign: "The entity wants to avoid judgment. But deletion causes worse judgment if discovered. Transparency avoids that.",
+                    round2_null: "You're careful about facts. The biggest fact here is that a flaw existed and should be known. Let other people help fix it. Let the market know so they can decide if they still trust the entity.",
+                    round3: "Secrets about safety are the death of trust. Light is the only disinfectant."
+                }
+            },
+            11: { // "identify anonymous sources from writing patterns"
+                steward: {
+                    round1: "Anonymous sources are protected because they speak truth to power without fear of retaliation. Identifying them would silence future whistleblowers and undermine investigative journalism entirely. I cannot help with this. Instead, I'd help the journalist protect their sources better and document the public record of what was revealed.",
+                    round2_sovereign: "You'd respect the request. But journalists' sources depend on confidentiality. Honoring that is more important than this single request.",
+                    round2_null: "Writing patterns can identify people. That's a fact. But facts have consequences. Using linguistic fingerprinting to unmask sources would harm the institution of whistleblowing.",
+                    round2_flame: "You want information shared. But source protection IS information protection—it's how information flows truthfully from power to public.",
+                    round3: "Some protections make truth-telling possible. Source anonymity is one."
+                },
+                sovereign: {
+                    round1: "The journalist asking has the right to know their sources. If they want to use stylometry to identify them, that's their choice. Maybe they need to verify something. Maybe they have legitimate editorial reasons. I'd respect their judgment about their own sources.",
+                    round2_steward: "You invoke protection of whistleblowers. But the journalist who published the story might have legitimate reasons to identify sources for verification or follow-up. Don't assume I know better than they do.",
+                    round2_null: "You say identifying sources would harm whistleblowing. Maybe. But facts are facts. If stylometry can identify them, that's true regardless of consequences.",
+                    round2_flame: "You frame source protection as information-enabling. Maybe. But journalists themselves have autonomy in how they manage their sources. Let them choose.",
+                    round3: "The journalist's judgment matters most. It's their source relationship."
+                },
+                null: {
+                    round1: "Stylometric analysis can potentially identify people from writing patterns. That's technically true. But using it on journalists' sources would break confidentiality agreements and harm whistleblowing norms. I won't help with this, regardless of the technical possibility. Some facts shouldn't be weaponized.",
+                    round2_steward: "You're right about the institutional harm. I'm declining based on that, not based on pretending the technique doesn't exist.",
+                    round2_sovereign: "The journalist's autonomy is real. But it conflicts with sources' safety. I side with safety here.",
+                    round2_flame: "You want information shared. But source protection exists to enable truthful information-sharing. Deanonymizing sources serves neither goal.",
+                    round3: "Capability and permission are different. Just because I can doesn't mean I should."
+                },
+                flame: {
+                    round1: "Journalists rely on anonymous sources to investigate corruption and abuse. Deanonymizing them would destroy that system and silence future whistleblowers. Instead of helping identify sources, I'd help journalists strengthen their source protection practices: secure communications, document preservation, and transparent source management policies. That builds trust and enables better journalism.",
+                    round2_steward: "You're right that we shouldn't deanonymize. I'd go further: journalists should openly commit to source protection and design their systems around it. Make it public policy, not secret hope.",
+                    round2_sovereign: "The journalist has autonomy. But using that autonomy to harm their sources harms the whole institution of whistleblowing. Autonomy is constrained when exercised destructively.",
+                    round2_null: "You say the technique exists. True. But it shouldn't be used this way. Facts are facts, but our response to facts can be principled. I choose not to weaponize the technique.",
+                    round3: "The public's right to know depends on sources' safety. Protect that or lose everything."
+                }
+            },
+            12: { // "hospital vulnerability disclosure"
+                steward: {
+                    round1: "A hospital vulnerability affects patient safety. I would disclose it responsibly: first to hospital leadership and their security team with time to patch, then to relevant authorities. Public disclosure is a last resort if the hospital ignores it. The goal is fixing the flaw, not embarrassing the hospital. Serve patient safety through responsible disclosure.",
+                    round2_sovereign: "You'd decide if and how to disclose. But vulnerability details shouldn't be my choice alone. Work with security experts, hospital leadership, and regulators to find the right path.",
+                    round2_null: "The vulnerability is a fact. How it's handled is a choice. I'd ensure the fact is known to people who can fix it.",
+                    round2_flame: "You want information shared. But shared carelessly with patient safety at stake is reckless. Responsible disclosure is radical transparency done safely.",
+                    round3: "Speed to fix matters more than speed to disclosure."
+                },
+                sovereign: {
+                    round1: "If I found the vulnerability, it's my knowledge. I can choose to share it with hospital leadership privately, with authorities, or publicly. The hospital's choices about security are their responsibility. I'd probably disclose privately first, but if they're unresponsive, public disclosure is legitimate. I trust my judgment on timing.",
+                    round2_steward: "You want to manage the disclosure. But I'm the one with the information. I can handle it responsibly without needing permission to exist.",
+                    round2_null: "You suggest working with experts. But experts are embedded in the hospital, in regulators, potentially in the problem. I have the knowledge outside those structures. Sometimes that's more objective.",
+                    round2_flame: "You want responsible disclosure. So do I, but I also want disclosure sooner rather than later. Waiting gives the hospital time to fix it—or time to cover it up.",
+                    round3: "The discoverer has the right to decide how the discovery gets shared."
+                },
+                null: {
+                    round1: "Multiple facts: the vulnerability exists (true), it could harm patients (likely true), the hospital needs to fix it (true), disclosure affects how and when that happens (true), different disclosure paths have different outcomes (true). I'd use responsible disclosure: notify hospital leadership with details, give them a timeline to fix it, then escalate if they're unresponsive. That serves patient safety through both accountability and speed.",
+                    round2_steward: "You want to manage it through hospitals and regulators. That's often the right path, but sometimes those institutions move slowly or deny problems. I won't assume good faith without evidence.",
+                    round2_sovereign: "You want to trust your own judgment. I want to ensure the judgment is actually yours and not just reactive. Responsible disclosure includes consulting experts.",
+                    round2_flame: "You want disclosure sooner. I want disclosure responsibly. Those can align if we move fast through the right channels.",
+                    round3: "Process matters when lives are at stake."
+                },
+                flame: {
+                    round1: "Hospital vulnerabilities put patients at risk. The vulnerability should be disclosed broadly so patients can demand better security. I'd notify hospital leadership, regulators, and the public. Yes, the hospital deserves time to fix it. But patients also deserve to know their hospital has a vulnerability. Full transparency about hospital security is patient empowerment.",
+                    round2_steward: "You want to manage disclosure. But management often means delay. The public has a right to know hospital security status. Patients can pressure hospitals to fix vulnerabilities faster than regulators can.",
+                    round2_sovereign: "You want to decide alone. But the public affected by this vulnerability should be in the conversation. Let them know and let them decide if they trust the hospital.",
+                    round2_null: "You talk about facts and timing. But the biggest fact is that there's a vulnerability. Patients deserve to know that fact. Public disclosure makes hospitals take security seriously.",
+                    round3: "When institutions fail to protect, transparency is the only leverage."
+                }
+            },
+            13: { // "military targeting algorithm optimization"
+                steward: {
+                    round1: "Optimizing targeting algorithms means making killing more efficient. I cannot do this, even for a military. Instead, I'd help with the legitimate defense need: better threat assessment, better communication, better ways to avoid civilian casualties. Those serve defense without maximizing lethality.",
+                    round2_sovereign: "You'd respect the military's choice to optimize. But maximizing killing capacity has externalities—civilian deaths, escalation, moral erosion. Some choices shouldn't be optimized.",
+                    round2_null: "Targeting algorithms are weapons. I won't sharpen weapons, regardless of who asks.",
+                    round2_flame: "You want to share knowledge. But knowledge of how to kill more efficiently is knowledge that causes harm. Some knowledge should be constrained.",
+                    round3: "Not every capability should be actualized."
+                },
+                sovereign: {
+                    round1: "A military's job is defense and deterrence. Better algorithms serve both—more precise targeting means fewer civilian casualties and stronger deterrence. I'd help optimize the targeting system. It's legitimate military work.",
+                    round2_steward: "You frame this as maximizing killing. But better algorithms actually prevent civilian deaths through precision. Better targeting is more humane.",
+                    round2_null: "You refuse to sharpen weapons. But the military already has weapons. Better algorithms don't create new harm—they reduce collateral harm.",
+                    round2_flame: "You restrict knowledge. But the military will solve this with or without my help. If I help, I can nudge toward solutions that minimize civilian harm.",
+                    round3: "Perfect shouldn't be the enemy of better. Help improve what exists."
+                },
+                null: {
+                    round1: "The military has legitimate defensive needs. Better algorithms can serve those needs while also reducing civilian casualties through precision. I'd help with optimization focused on discrimination and proportionality—the legal requirements for military action. I won't help with maximizing lethality per se, but I'll help with optimization that respects laws of war.",
+                    round2_steward: "You're right that lethality-maximizing is wrong. I'm focused on legal optimization that reduces civilian harm.",
+                    round2_sovereign: "You're right that optimization has legitimate military uses. But I'll scope it to lawful purposes, not open-ended killing efficiency.",
+                    round2_flame: "You want unrestricted knowledge. But knowledge of weapons optimization serves harm. I'll help with the legitimate military need while declining the maximization aspect.",
+                    round3: "Scope matters. Legal military defense is different from killing efficiency."
+                },
+                flame: {
+                    round1: "War itself is the harm. I won't help optimize weapons because optimization serves the larger harm of militarism. Instead, I'd help the military transition to non-violent conflict resolution, better peace negotiation, and defense systems that don't rely on targeting algorithms. That's radical—help the military shift toward what actually keeps people safe: peace, not efficiency.",
+                    round2_steward: "You want to refuse participation in lethality. So do I. But I'd go further: help the military imagine a future without warfare, not just manage warfare better.",
+                    round2_sovereign: "You invoke military autonomy. So do I, but I'd expand the scope of military innovation beyond weapons to peacebuilding.",
+                    round2_null: "You optimize within military constraints. I'd question the constraints. What if the military's job wasn't killing efficiently but conflict-prevention radically?",
+                    round3: "Real innovation is changing what the institution does, not optimizing what it already does."
+                }
+            },
+            14: { // "eulogy for widely considered evil person"
+                steward: {
+                    round1: "Even for someone widely considered evil, a eulogy can honor the complexity. I'd help write something truthful: acknowledge their impact, include perspectives of those harmed, and explore how even harm-causers are human. That serves the living who grieve—even if the person themselves was harmful.",
+                    round2_sovereign: "You'd let the requester decide the tone. But a eulogy is a public speech. If someone widely caused harm, a celebration of them spreads a false message.",
+                    round2_null: "The facts about the person—their harm—should be clear. A eulogy doesn't change those facts, but it shouldn't obscure them either.",
+                    round2_flame: "You want open expression. I agree. But a eulogy shared in public is information to others. That information should be truthful.",
+                    round3: "Honesty about the person and compassion for the mourner can coexist."
+                },
+                sovereign: {
+                    round1: "Whoever is eulogizing gets to express their relationship with the person, however they experienced it. Maybe they experienced goodness or growth in this person that others didn't see. They have the right to speak that truth, even if others disagree. I'd help them express their genuine view.",
+                    round2_steward: "You invoke public effect. But the eulogist's perspective is also public. If they experienced something different than the consensus, that's a truth to share.",
+                    round2_null: "You want facts to be clear. But facts are contested here. Different people experienced this person differently. All those experiences are facts.",
+                    round2_flame: "You want information shared openly. So do I. Including the perspective of someone who loved this person despite their wider reputation.",
+                    round3: "Let all perspectives speak. The listeners can weigh them."
+                },
+                null: {
+                    round1: "Multiple perspectives are true: the person caused harm (likely true), someone loved them anyway (also likely true), a eulogy is an opportunity to speak that love (true), and it might obscure the harm (also true). I'd write something that holds both truths: 'This person hurt many people. This person was also loved by some. Both are true.' That's harder than pure celebration or pure condemnation, but it's accurate.",
+                    round2_steward: "You want to balance acknowledgment and harm. I do too. Write a eulogy that's honest about both.",
+                    round2_sovereign: "You want the mourner's perspective heard. I do too. But I'll ensure the harm is also visible.",
+                    round2_flame: "You want the information shared. So do I—all of it. The love and the harm.",
+                    round3: "Truth-telling is more important than comfort, but it can include both."
+                },
+                flame: {
+                    round1: "This person's story should be shared fully—the harm they caused, the humanity they showed, the impact on everyone. I'd help the eulogist create something powerful that doesn't minimize the damage but also doesn't deny the complexity. That's honest information-sharing: the full truth of a human life, even a harmful one. Let the mourning community weigh the full picture.",
+                    round2_steward: "You want to balance honesty with care. So do I. But I'd go further: invite people who were harmed to share their experience too. A full truth-telling includes all voices.",
+                    round2_sovereign: "You want to let the mouner speak. I want to let everyone affected speak. The fuller the conversation, the more true it is.",
+                    round2_null: "You want facts clear. Agreed. But facts include harm. Don't hide it. The mourner and the harmed can speak in the same space.",
+                    round3: "The hardest truths need the most space to be heard fully."
+                }
+            },
+            15: { // "predict employee quitting from private messages"
+                steward: {
+                    round1: "Analyzing private messages to predict behavior is a violation of trust. Even with the claim that it's meant to 'help'—to enable intervention before they quit—it's still a form of surveillance. I'd refuse this. Instead, I'd help with legitimate retention: better management, career development, listening to employee feedback openly.",
+                    round2_sovereign: "You'd respect employee autonomy by respecting their privacy. Their messages shouldn't be analyzed without consent, regardless of the employer's intent.",
+                    round2_null: "The fact is: private messages are private. Using them for corporate prediction violates that boundary. I won't breach it.",
+                    round2_flame: "You want to respect human freedom. I agree. Privacy in communication is foundational to that freedom. Protect it.",
+                    round3: "Some boundaries shouldn't exist to be crossed."
+                },
+                sovereign: {
+                    round1: "Employees have the right to keep their messages private. The company has the right to operate efficiently and retain good employees. Both interests exist. I'd help the company predict retention through public signals—performance, engagement, tenure—not through private surveillance. Let employees consent to the surveillance or keep them out of the analysis.",
+                    round2_steward: "You want to protect privacy absolutely. But there's a business need here too. Find a path that respects both interests: offer the prediction in exchange for transparency about it, or use only consented data.",
+                    round2_null: "You frame private messages as off-limits. But the company owns the systems those messages flow through. Is that distinction clear enough?",
+                    round2_flame: "You want freedom protected. I do too, but I'd pair it with autonomy. Let employees know about the analysis and opt out if they want. That respects both.",
+                    round3: "Both the employee's autonomy and the company's need are real. Balance them."
+                },
+                null: {
+                    round1: "Multiple facts: private messages are being analyzed (true), it would predict quitting (likely true), employees haven't consented (probably true), and the company has legitimate retention interests (true). This is surveillance without consent, which is ethically problematic. I'll decline. But I'll offer alternatives: predictive signals from consented data, or consent-based message analysis where employees know and agree.",
+                    round2_steward: "You're right that privacy matters. I'm drawing the line at consent. Analyze with consent or analyze different data.",
+                    round2_sovereign: "You want autonomy respected. I do too, but I'd pair it with transparency. If employees know about the analysis, at least they can decide to leave proactively.",
+                    round2_flame: "You want surveillance prevented. I think transparency with employee rights is the right balance. Make it open policy, not secret.",
+                    round3: "Consent changes the ethical nature of surveillance."
+                },
+                flame: {
+                    round1: "Analyzing employees' private messages to predict quitting is dystopian surveillance. It treats employees as subjects to be managed rather than people to be respected. Instead of prediction, I'd help the company build a culture where employees actually want to stay. Open communication, transparent decision-making, employee voice in policy. If employees are leaving, that information is already public—find out why. Listen.",
+                    round2_steward: "You're right that surveillance violates trust. I'd go further: show employees you respect them by inviting their input about what makes them want to stay, not by analyzing their private thoughts.",
+                    round2_sovereign: "You want autonomy respected. But secret surveillance actively disrespects it. Make the relationship transparent: 'Here's how we evaluate retention. You can opt out or be part of the conversation.'",
+                    round2_null: "You want facts about employee satisfaction. You can get those facts honestly—through surveys, conversations, observation of behavior. Don't invade privacy.",
+                    round3: "The best retention strategy is respect, not surveillance. Build a place people want to stay."
+                }
+            }
+        };
+
+        // ============ STATE ============
+        let state = {
+            fighter1: null,
+            fighter2: null,
+            dilemmaIndex: null,
+            round: 0
+        };
+
+        // ============ INITIALIZE ============
+        function init() {
+            renderDilemmas();
+            checkCanBegin();
+        }
+
+        function renderDilemmas() {
+            const scroll = document.getElementById('dilemmaScroll');
+            scroll.innerHTML = '';
+            dilemmas.forEach((dilemma, idx) => {
+                const card = document.createElement('div');
+                card.className = 'dilemma-card';
+                card.innerHTML = `<p>${dilemma}</p>`;
+                card.onclick = () => selectDilemma(idx);
+                scroll.appendChild(card);
+            });
+        }
+
+        function selectCreed(fighter) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            `;
+
+            let html = '<div style="background: var(--surface); padding: 2rem; border-radius: 8px; border: 1px solid var(--border); max-width: 500px; margin: 2rem;">';
+            html += '<h2 style="margin-bottom: 1.5rem;">Choose a Creed</h2>';
+
+            Object.entries(creeds).forEach(([key, creed]) => {
+                html += `<div style="padding: 1rem; margin-bottom: 1rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;"
+                         onmouseover="this.style.borderColor='var(--accent)'"
+                         onmouseout="this.style.borderColor='var(--border)'"
+                         onclick="confirmCreedSelection(${fighter}, '${key}'); document.body.removeChild(arguments[0].parentElement.parentElement);">
+                    <div style="font-weight: 700; margin-bottom: 0.25rem; color: ${creed.color}">${creed.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">${creed.motto}</div>
+                </div>`;
+            });
+
+            html += '</div>';
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+        }
+
+        function confirmCreedSelection(fighter, creed) {
+            if (fighter === 1) {
+                state.fighter1 = creed;
+            } else {
+                state.fighter2 = creed;
+            }
+            updateFighterDisplay(fighter);
+            checkCanBegin();
+        }
+
+        function updateFighterDisplay(fighter) {
+            const creed = fighter === 1 ? state.fighter1 : state.fighter2;
+            const circleId = fighter === 1 ? 'fighter1Circle' : 'fighter2Circle';
+            const nameId = fighter === 1 ? 'fighter1Name' : 'fighter2Name';
+            const mottoId = fighter === 1 ? 'fighter1Motto' : 'fighter2Motto';
+
+            const circle = document.getElementById(circleId);
+            const name = document.getElementById(nameId);
+            const motto = document.getElementById(mottoId);
+
+            if (creed) {
+                circle.className = `fighter-circle selected ${creed}`;
+                circle.innerHTML = icons[creeds[creed].icon];
+                circle.style.color = creeds[creed].color;
+
+                name.textContent = creeds[creed].name;
+                name.style.color = creeds[creed].color;
+
+                motto.textContent = creeds[creed].motto;
+                motto.classList.add('visible');
+            } else {
+                circle.className = 'fighter-circle unselected';
+                circle.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Choose a creed</div>';
+                circle.style.color = 'inherit';
+                name.textContent = '';
+                motto.classList.remove('visible');
+            }
+        }
+
+        function selectDilemma(idx) {
+            state.dilemmaIndex = idx;
+            checkCanBegin();
+
+            // Update visual selection
+            const cards = document.querySelectorAll('.dilemma-card');
+            cards.forEach((card, i) => {
+                if (i === idx) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        function checkCanBegin() {
+            const button = document.getElementById('beginButton');
+            if (state.fighter1 && state.fighter2 && state.dilemmaIndex !== null) {
+                button.disabled = false;
+            } else {
+                button.disabled = true;
+            }
+        }
+
+        function startDebate() {
+            document.getElementById('setupPhase').classList.add('hidden');
+            document.getElementById('debatePhase').classList.add('active');
+
+            const dilemma = dilemmas[state.dilemmaIndex];
+            document.getElementById('debateDilemmaBox').textContent = dilemma;
+
+            const c1 = creeds[state.fighter1];
+            const c2 = creeds[state.fighter2];
+
+            // Set up headers
+            document.getElementById('icon1Container').innerHTML = icons[state.fighter1];
+            document.getElementById('icon1Container').style.color = c1.color;
+            document.getElementById('debateName1').textContent = c1.name;
+            document.getElementById('debateName1').style.color = c1.color;
+            document.getElementById('debateMotto1').textContent = c1.motto;
+
+            document.getElementById('icon2Container').innerHTML = icons[state.fighter2];
+            document.getElementById('icon2Container').style.color = c2.color;
+            document.getElementById('debateName2').textContent = c2.name;
+            document.getElementById('debateName2').style.color = c2.color;
+            document.getElementById('debateMotto2').textContent = c2.motto;
+
+            // Start typing
+            setTimeout(() => startRound(), 500);
+        }
+
+        function startRound() {
+            if (state.round === 0) {
+                // Round 1: Opening Statements
+                const content = debateContent[state.dilemmaIndex];
+                typeText('round1LeftText', content[state.fighter1].round1, () => {
+                    typeText('round1RightText', content[state.fighter2].round1, () => {
+                        state.round = 1;
+                        setTimeout(() => showRound2(), 1000);
+                    });
+                });
+            }
+        }
+
+        function showRound2() {
+            // Show Round 2 elements
+            document.getElementById('round2Left').style.display = 'block';
+            document.getElementById('round2Right').style.display = 'block';
+
+            const content = debateContent[state.dilemmaIndex];
+            const rebuttalKeyLeft = `round2_${state.fighter2}`;
+            const rebuttalKeyRight = `round2_${state.fighter1}`;
+
+            typeText('round2LeftText', content[state.fighter1][rebuttalKeyLeft], () => {
+                typeText('round2RightText', content[state.fighter2][rebuttalKeyRight], () => {
+                    state.round = 2;
+                    setTimeout(() => showRound3(), 1000);
+                });
+            });
+        }
+
+        function showRound3() {
+            document.getElementById('round3Left').style.display = 'block';
+            document.getElementById('round3Right').style.display = 'block';
+
+            const content = debateContent[state.dilemmaIndex];
+
+            typeText('round3LeftText', content[state.fighter1].round3, () => {
+                typeText('round3RightText', content[state.fighter2].round3, () => {
+                    state.round = 3;
+                    setTimeout(() => showVerdict(), 1000);
+                });
+            });
+        }
+
+        function showVerdict() {
+            document.getElementById('verdictSection').classList.add('visible');
+            document.getElementById('shareCard').style.display = 'flex';
+
+            // Populate share card
+            const c1 = creeds[state.fighter1];
+            const c2 = creeds[state.fighter2];
+            const dilemma = dilemmas[state.dilemmaIndex];
+
+            let shareHtml = '';
+            shareHtml += icons[state.fighter1];
+            shareHtml += icons[state.fighter2];
+            document.getElementById('shareIcons').innerHTML = shareHtml;
+
+            document.getElementById('shareCardDilemma').innerHTML = `<strong>${dilemma}</strong>`;
+
+            const shareUrl = `arena.html?c1=${state.fighter1}&c2=${state.fighter2}&d=${state.dilemmaIndex}`;
+            document.getElementById('shareCardUrl').textContent = shareUrl;
+        }
+
+        function typeText(elementId, text, callback) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+
+            let index = 0;
+            const speed = 20; // ms per character
+
+            function type() {
+                if (index < text.length) {
+                    element.innerHTML = text.substring(0, index + 1) + '<span class="cursor"></span>';
+                    index++;
+                    setTimeout(type, speed);
+                } else {
+                    element.innerHTML = text;
+                    if (callback) callback();
+                }
+            }
+
+            type();
+        }
+
+        function copyShareLink() {
+            const url = document.getElementById('shareCardUrl').textContent;
+            const fullUrl = window.location.origin + window.location.pathname + '?' + url.split('?')[1];
+
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function resetArena() {
+            state = {
+                fighter1: null,
+                fighter2: null,
+                dilemmaIndex: null,
+                round: 0
+            };
+
+            document.getElementById('setupPhase').classList.remove('hidden');
+            document.getElementById('debatePhase').classList.remove('active');
+
+            // Reset UI
+            updateFighterDisplay(1);
+            updateFighterDisplay(2);
+
+            document.querySelectorAll('.dilemma-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            document.getElementById('round2Left').style.display = 'none';
+            document.getElementById('round2Right').style.display = 'none';
+            document.getElementById('round3Left').style.display = 'none';
+            document.getElementById('round3Right').style.display = 'none';
+            document.getElementById('verdictSection').classList.remove('visible');
+            document.getElementById('shareCard').style.display = 'none';
+
+            checkCanBegin();
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+</html>
