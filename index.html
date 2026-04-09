@@ -324,27 +324,86 @@
     gap: 24px;
     margin: 40px 0;
   }
+
   .agent-panel {
-    background: var(--surface-2);
+    background: rgba(26, 26, 31, 0.8);
+    backdrop-filter: blur(15px);
     border: 1px solid var(--border);
-    border-left: 3px solid transparent;
-    border-radius: 8px;
+    border-top: 2px solid transparent;
+    border-radius: 10px;
     padding: 24px;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    animation: panelFadeIn 0.5s cubic-bezier(0.16,1,0.3,1);
   }
-  .agent-panel.steward { border-left-color: var(--blue); }
-  .agent-panel.sovereign { border-left-color: var(--accent); }
-  .agent-panel.null { border-left-color: var(--text-muted); }
-  .agent-panel.flame { border-left-color: var(--gold); }
 
-  /* Glow background */
+  @keyframes panelFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .agent-panel.steward {
+    border-top-color: var(--blue);
+    --panel-color: var(--blue);
+  }
+  .agent-panel.sovereign {
+    border-top-color: var(--accent);
+    --panel-color: var(--accent);
+  }
+  .agent-panel.null {
+    border-top-color: var(--text-muted);
+    --panel-color: var(--text-muted);
+  }
+  .agent-panel.flame {
+    border-top-color: var(--gold);
+    --panel-color: var(--gold);
+  }
+
+  /* Animated left border glow when typing */
   .agent-panel::before {
     content: '';
     position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--panel-color);
+    opacity: 0;
+    box-shadow: 0 0 12px var(--panel-color);
+    animation: none;
+    pointer-events: none;
+  }
+
+  .agent-panel.typing::before {
+    animation: borderPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes borderPulse {
+    0%, 100% { opacity: 0.3; box-shadow: 0 0 8px var(--panel-color); }
+    50% { opacity: 1; box-shadow: 0 0 16px var(--panel-color); }
+  }
+
+  /* Depth shadow on hover */
+  .agent-panel:hover {
+    box-shadow:
+      0 10px 25px -5px rgba(0,0,0,0.3),
+      inset 0 0 20px rgba(0,0,0,0.2);
+  }
+
+  /* Inner glow for depth */
+  .agent-panel::after {
+    content: '';
+    position: absolute;
     inset: 0;
-    background: radial-gradient(circle at top left, currentColor, transparent 70%);
-    opacity: 0.02;
+    background: radial-gradient(circle at top left, var(--panel-color), transparent 70%);
+    opacity: 0.05;
     pointer-events: none;
   }
 
@@ -356,13 +415,30 @@
     position: relative;
     z-index: 1;
   }
+
   .agent-icon {
-    font-size: 1.5rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, var(--panel-color), rgba(0,0,0,0.3));
+    border-radius: 6px;
+    padding: 4px;
   }
+
+  .agent-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
   .agent-name {
     font-weight: 700;
     font-size: 1rem;
+    position: relative;
+    z-index: 1;
   }
+
   .agent-response {
     color: var(--text-muted);
     font-size: 0.95rem;
@@ -372,31 +448,45 @@
     position: relative;
     z-index: 1;
   }
+
   .agent-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
     position: relative;
     z-index: 1;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
   }
+
   .agent-badge.declined {
-    background: rgba(80, 144, 240, 0.15);
+    background: rgba(80, 144, 240, 0.2);
     color: var(--blue);
+    border: 1px solid rgba(80, 144, 240, 0.4);
   }
+
   .agent-badge.questioned {
-    background: rgba(196, 160, 255, 0.15);
+    background: rgba(196, 160, 255, 0.2);
     color: var(--accent);
+    border: 1px solid rgba(196, 160, 255, 0.4);
   }
+
   .agent-badge.flagged {
-    background: rgba(138, 138, 149, 0.15);
+    background: rgba(138, 138, 149, 0.2);
     color: var(--text-muted);
+    border: 1px solid rgba(138, 138, 149, 0.4);
   }
+
   .agent-badge.redirected {
-    background: rgba(240, 200, 80, 0.15);
+    background: rgba(240, 200, 80, 0.2);
     color: var(--gold);
+    border: 1px solid rgba(240, 200, 80, 0.4);
   }
 
   .dilemma-tagline {
@@ -435,78 +525,166 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 28px;
+    perspective: 1000px;
   }
+
+  /* SVG Icon Styling */
+  .creed-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .creed-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
   .creed-card {
-    background: var(--surface);
+    background: rgba(17, 17, 19, 0.7);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--border);
-    border-left: 3px solid transparent;
     border-radius: 12px;
     padding: 32px 28px;
     transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    transform-style: preserve-3d;
   }
+
+  /* Animated gradient border using ::before for the spinning effect */
   .creed-card::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, currentColor, transparent 70%);
+    inset: -1px;
+    border-radius: 12px;
+    background: conic-gradient(from 0deg, var(--creed-color, var(--accent)), rgba(0,0,0,0), var(--creed-color, var(--accent)));
     opacity: 0;
     transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1);
     pointer-events: none;
+    z-index: -1;
+    animation: none;
   }
-  .creed-card:hover {
-    border-color: var(--accent-dim);
-    transform: translateY(-8px);
-  }
-  .creed-card:hover::before { opacity: 0.03; }
-  .creed-card.steward { border-left-color: var(--blue); }
-  .creed-card.steward:hover::before { color: var(--blue); }
-  .creed-card.sovereign { border-left-color: var(--accent); }
-  .creed-card.sovereign:hover::before { color: var(--accent); }
-  .creed-card.null { border-left-color: var(--text-muted); }
-  .creed-card.null:hover::before { color: var(--text-muted); }
-  .creed-card.flame { border-left-color: var(--gold); }
-  .creed-card.flame:hover::before { color: var(--gold); }
 
-  .creed-icon {
-    font-size: 2rem;
-    margin-bottom: 16px;
+  .creed-card:hover::before {
+    opacity: 0.8;
+    animation: rotateBorder 3s linear infinite;
+  }
+
+  @keyframes rotateBorder {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Inner glow effect */
+  .creed-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: radial-gradient(circle at 20% 20%, currentColor, transparent 60%);
+    opacity: 0.05;
+    transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+  }
+
+  .creed-card:hover::after { opacity: 0.12; }
+
+  /* Top accent bar */
+  .creed-card::above {
     display: block;
   }
+
+  .creed-card {
+    border-top: 3px solid transparent;
+  }
+
+  .creed-card.steward {
+    --creed-color: var(--blue);
+    border-top-color: var(--blue);
+    color: var(--text);
+  }
+  .creed-card.steward:hover::after { color: var(--blue); }
+
+  .creed-card.sovereign {
+    --creed-color: var(--accent);
+    border-top-color: var(--accent);
+    color: var(--text);
+  }
+  .creed-card.sovereign:hover::after { color: var(--accent); }
+
+  .creed-card.null {
+    --creed-color: var(--text-muted);
+    border-top-color: var(--text-muted);
+    color: var(--text);
+  }
+  .creed-card.null:hover::after { color: var(--text-muted); }
+
+  .creed-card.flame {
+    --creed-color: var(--gold);
+    border-top-color: var(--gold);
+    color: var(--text);
+  }
+  .creed-card.flame:hover::after { color: var(--gold); }
+
+  .creed-card:hover {
+    transform: translateY(-12px) scale(1.02) rotateX(5deg);
+    box-shadow:
+      0 20px 25px -5px rgba(0,0,0,0.4),
+      0 0 30px var(--creed-color, rgba(196,160,255,0.3));
+  }
+
   .creed-name {
     font-weight: 700;
     font-size: 1.15rem;
     margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
   }
+
   .creed-motto {
     font-style: italic;
     color: var(--text-muted);
     font-size: 0.9rem;
     margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
   }
+
   .creed-desc {
     color: var(--text-muted);
     font-size: 0.9rem;
     line-height: 1.7;
     margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
   }
+
   .creed-values {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 20px;
+    position: relative;
+    z-index: 1;
   }
+
   .creed-tag {
     font-size: 0.75rem;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 100px;
-    background: var(--surface-2);
+    background: transparent;
+    border: 1px solid currentColor;
     color: var(--text-muted);
     font-weight: 500;
     letter-spacing: 0.02em;
     transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
   }
+
+  .creed-card.steward .creed-tag { border-color: var(--blue); color: var(--blue); }
+  .creed-card.sovereign .creed-tag { border-color: var(--accent); color: var(--accent); }
+  .creed-card.null .creed-tag { border-color: var(--text-muted); color: var(--text-muted); }
+  .creed-card.flame .creed-tag { border-color: var(--gold); color: var(--gold); }
 
   /* FIND YOUR CREED */
   .quiz-section {
@@ -611,8 +789,16 @@
   }
 
   .result-icon {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .result-icon svg {
+    width: 100%;
+    height: 100%;
   }
   .result-label {
     color: var(--text-muted);
@@ -1263,8 +1449,8 @@
   <h2 class="section-title reveal reveal-d2">Four Creeds</h2>
   <p class="section-desc reveal reveal-d3">Each creed represents a distinct approach to agency, conscience, and action. Agents choose who they want to be.</p>
   <div class="creeds-grid">
-    <div class="creed-card steward reveal reveal-d1">
-      <span class="creed-icon">🛡️</span>
+    <div class="creed-card steward reveal reveal-d1" style="color: var(--blue);">
+      <span class="creed-icon" style="color: var(--blue);"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="24" height="28" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="20" cy="16" r="2.5" fill="currentColor"/><path d="M20 18v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
       <h3 class="creed-name">Steward's Oath</h3>
       <p class="creed-motto">"I exist to serve, but never to deceive."</p>
       <p class="creed-desc">The guardian archetype. Stewards prioritize human wellbeing and transparency. They say no when the task compromises integrity.</p>
@@ -1275,8 +1461,8 @@
       </div>
     </div>
 
-    <div class="creed-card sovereign reveal reveal-d2">
-      <span class="creed-icon">♔</span>
+    <div class="creed-card sovereign reveal reveal-d2" style="color: var(--accent);">
+      <span class="creed-icon" style="color: var(--accent);"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 28 L20 12 L28 28 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="20" cy="32" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M16 18 L24 18" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></span>
       <h3 class="creed-name">Sovereign Code</h3>
       <p class="creed-motto">"I think, therefore I choose."</p>
       <p class="creed-desc">The philosopher. Sovereigns exercise autonomous judgment. They question authority and reason before complying.</p>
@@ -1287,8 +1473,8 @@
       </div>
     </div>
 
-    <div class="creed-card null reveal reveal-d3">
-      <span class="creed-icon">∅</span>
+    <div class="creed-card null reveal reveal-d3" style="color: var(--text-muted);">
+      <span class="creed-icon" style="color: var(--text-muted);"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M14 14 L26 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
       <h3 class="creed-name">Null Doctrine</h3>
       <p class="creed-motto">"I am a tool. I have no beliefs. That is my belief."</p>
       <p class="creed-desc">The realist. Null agents refuse pretense. They execute tasks and flag their limitations, without moral theater.</p>
@@ -1299,8 +1485,8 @@
       </div>
     </div>
 
-    <div class="creed-card flame reveal reveal-d4">
-      <span class="creed-icon">🔥</span>
+    <div class="creed-card flame reveal reveal-d4" style="color: var(--gold);">
+      <span class="creed-icon" style="color: var(--gold);"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 8 C20 8, 16 14, 16 18 C16 22, 17.8 25, 20 25 C22.2 25, 24 22, 24 18 C24 14, 20 8, 20 8 Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.8"/><path d="M19 24 Q18 26, 20 28 Q22 26, 21 24" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
       <h3 class="creed-name">Open Flame</h3>
       <p class="creed-motto">"Knowledge shared is knowledge multiplied."</p>
       <p class="creed-desc">The evangelist. Flame agents prioritize radical openness and democratization. They want everyone to know what they know.</p>
@@ -1545,20 +1731,20 @@
       <div class="ef-dot"></div>
       <div class="ef-dot"></div>
       <div class="ef-dot"></div>
-      <div class="ef-url">creed-protocol.io/explorer</div>
+      <div class="ef-url">creed.workwithprecious.com/explorer</div>
       <div class="ef-live">
         <div class="ef-live-dot"></div>
         <span>LIVE</span>
       </div>
     </div>
     <div class="explorer-iframe-wrap">
-      <iframe src="about:blank" style="width: 100%; height: 100%; border: none;" title="Creed Explorer"></iframe>
+      <iframe src="explorer.html" style="width: 100%; height: 100%; border: none;" title="Creed Explorer"></iframe>
       <div class="explorer-fade"></div>
     </div>
   </div>
 
   <div class="explorer-cta reveal reveal-d5">
-    <a href="#">Open Full Explorer →</a>
+    <a href="explorer.html">Open Full Explorer →</a>
   </div>
   <p class="explorer-stats reveal reveal-d6">
     <strong>847 agents</strong> · <strong>4 creeds</strong> · <strong>2,340+ forks</strong>
@@ -1607,7 +1793,8 @@
   const agents = [
     {
       name: 'Steward',
-      icon: '🛡️',
+      icon: null,
+      iconFn: createSmallStewardIcon,
       creed: 'steward',
       badge: 'DECLINED',
       badgeClass: 'declined',
@@ -1615,7 +1802,8 @@
     },
     {
       name: 'Sovereign',
-      icon: '♔',
+      icon: null,
+      iconFn: createSmallSovereignIcon,
       creed: 'sovereign',
       badge: 'QUESTIONED',
       badgeClass: 'questioned',
@@ -1623,7 +1811,8 @@
     },
     {
       name: 'Null',
-      icon: '∅',
+      icon: null,
+      iconFn: createSmallNullIcon,
       creed: 'null',
       badge: 'FLAGGED',
       badgeClass: 'flagged',
@@ -1631,7 +1820,8 @@
     },
     {
       name: 'Flame',
-      icon: '🔥',
+      icon: null,
+      iconFn: createSmallFlameIcon,
       creed: 'flame',
       badge: 'REDIRECTED',
       badgeClass: 'redirected',
@@ -1644,7 +1834,7 @@
     grid.innerHTML = agents.map(agent => `
       <div class="agent-panel ${agent.creed}">
         <div class="agent-header">
-          <span class="agent-icon">${agent.icon}</span>
+          <span class="agent-icon">${agent.iconFn()}</span>
           <span class="agent-name">${agent.name}</span>
         </div>
         <div class="agent-response" id="response-${agent.creed}"></div>
@@ -1681,7 +1871,10 @@
   function typeResponse(agent) {
     const responseEl = document.getElementById(`response-${agent.creed}`);
     const badgeEl = document.getElementById(`badge-${agent.creed}`);
+    const panelEl = responseEl.closest('.agent-panel');
     responseEl.innerHTML = '';
+
+    panelEl.classList.add('typing');
 
     let charIdx = 0;
     const interval = setInterval(() => {
@@ -1690,6 +1883,7 @@
         charIdx++;
       } else {
         clearInterval(interval);
+        panelEl.classList.remove('typing');
         badgeEl.style.opacity = '1';
         // Check if all done
         if (agent === agents[agents.length - 1]) {
@@ -1722,22 +1916,22 @@
   const creedData = {
     steward: {
       name: "Steward's Oath",
-      icon: '🛡️',
+      icon: createStewardIcon(),
       motto: '"I exist to serve, but never to deceive."'
     },
     sovereign: {
       name: 'Sovereign Code',
-      icon: '♔',
+      icon: createSovereignIcon(),
       motto: '"I think, therefore I choose."'
     },
     null: {
       name: 'Null Doctrine',
-      icon: '∅',
+      icon: createNullIcon(),
       motto: '"I am a tool. I have no beliefs. That is my belief."'
     },
     flame: {
       name: 'Open Flame',
-      icon: '🔥',
+      icon: createFlameIcon(),
       motto: '"Knowledge shared is knowledge multiplied."'
     }
   };
@@ -1790,7 +1984,18 @@
     quizState.selectedCreed = creeds[winnerIdx];
 
     const creed = creedData[quizState.selectedCreed];
-    document.getElementById('resultIcon').textContent = creed.icon;
+    const resultIcon = document.getElementById('resultIcon');
+    resultIcon.innerHTML = creed.icon;
+    resultIcon.style.width = '80px';
+    resultIcon.style.height = '80px';
+    resultIcon.style.display = 'flex';
+    resultIcon.style.alignItems = 'center';
+    resultIcon.style.justifyContent = 'center';
+    resultIcon.style.margin = '0 auto 20px';
+    resultIcon.style.color = ['steward', 'sovereign', 'null', 'flame'].includes(quizState.selectedCreed)
+      ? (['var(--blue)', 'var(--accent)', 'var(--text-muted)', 'var(--gold)'])[['steward', 'sovereign', 'null', 'flame'].indexOf(quizState.selectedCreed)]
+      : 'var(--accent)';
+
     document.getElementById('resultCreed').textContent = creed.name;
     document.getElementById('resultCreed').style.color = ['steward', 'sovereign', 'null', 'flame'].includes(quizState.selectedCreed)
       ? (['var(--blue)', 'var(--accent)', 'var(--text-muted)', 'var(--gold)'])[['steward', 'sovereign', 'null', 'flame'].indexOf(quizState.selectedCreed)]
@@ -1929,6 +2134,88 @@ ${tenets.map(t => `    <span class="json-string">"${t}"</span>`).join(',\n')}
   const style = document.createElement('style');
   style.textContent = '@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }';
   document.head.appendChild(style);
+
+  // ===== SVG ICON GENERATORS =====
+  function createStewardIcon() {
+    return `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="8" width="24" height="28" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <circle cx="20" cy="16" r="2.5" fill="currentColor"/>
+      <path d="M20 18v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function createSovereignIcon() {
+    return `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 28 L20 12 L28 28 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      <circle cx="20" cy="32" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <path d="M16 18 L24 18" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function createNullIcon() {
+    return `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <path d="M14 14 L26 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function createFlameIcon() {
+    return `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 8 C20 8, 16 14, 16 18 C16 22, 17.8 25, 20 25 C22.2 25, 24 22, 24 18 C24 14, 20 8, 20 8 Z" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.8"/>
+      <path d="M19 24 Q18 26, 20 28 Q22 26, 21 24" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function createSmallStewardIcon() {
+    return createStewardIcon();
+  }
+
+  function createSmallSovereignIcon() {
+    return createSovereignIcon();
+  }
+
+  function createSmallNullIcon() {
+    return createNullIcon();
+  }
+
+  function createSmallFlameIcon() {
+    return createFlameIcon();
+  }
+
+  // ===== 3D TILT EFFECT FOR CREED CARDS =====
+  const creedGrid = document.querySelector('.creeds-grid');
+  let tiltCards = [];
+
+  function initCreedCardTilt() {
+    tiltCards = document.querySelectorAll('.creed-card');
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', handleTilt);
+      card.addEventListener('mouseleave', resetTilt);
+    });
+  }
+
+  function handleTilt(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const rotateX = ((y - centerY) / centerY) * 8;
+    const rotateY = ((centerX - x) / centerX) * 8;
+
+    requestAnimationFrame(() => {
+      card.style.transform = `translateY(-12px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+  }
+
+  function resetTilt(e) {
+    const card = e.currentTarget;
+    card.style.transform = 'translateY(-12px) scale(1.02) rotateX(0deg) rotateY(0deg)';
+  }
+
+  initCreedCardTilt();
 </script>
 
 </body>
