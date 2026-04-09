@@ -687,234 +687,199 @@
   .creed-card.flame .creed-tag { border-color: var(--gold); color: var(--gold); }
 
   /* FIND YOUR CREED */
-  .quiz-section {
+
+  /* EXPERIENCE SECTION */
+  .experience-section {
     padding: 120px 0 140px;
   }
-  .quiz-container {
-    max-width: 700px;
-    margin: 0 auto;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 50px 40px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-  }
-
-  /* Progress dots */
-  .progress-dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 40px;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-  }
-  .dot.filled {
-    background: var(--accent);
-    box-shadow: 0 0 12px rgba(196, 160, 255, 0.4);
-  }
-  .dot.current {
-    background: var(--accent);
-  }
-
-  .quiz-step {
-    display: none;
-    animation: slideIn 0.4s cubic-bezier(0.16,1,0.3,1);
-  }
-  .quiz-step.active { display: block; }
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .quiz-question {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-align: center;
-    color: var(--text);
-  }
-  .quiz-options {
+  .experience-grid {
     display: grid;
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 80px;
   }
-  .option-btn {
-    padding: 18px 24px;
-    background: var(--surface-2);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    text-align: left;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-    font-family: 'Inter', sans-serif;
-  }
-  .option-btn:hover {
-    border-color: var(--accent-dim);
-    background: rgba(196, 160, 255, 0.05);
-  }
-  .option-btn.selected {
-    border-color: var(--accent);
-    background: rgba(196, 160, 255, 0.1);
-    box-shadow: 0 0 16px rgba(196, 160, 255, 0.2);
-  }
-
-  .result-reveal {
-    text-align: center;
-    animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1);
-  }
-  @keyframes popIn {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .result-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
+  .experience-card {
+    background: rgba(17, 17, 19, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(42, 42, 48, 0.4);
+    border-radius: 16px;
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    min-height: 480px;
   }
-  .result-icon svg {
+  .experience-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16,1,0.3,1);
+    z-index: 1;
+  }
+  .experience-card.arena::before {
+    background: linear-gradient(135deg, rgba(80, 144, 240, 0.12), rgba(196, 160, 255, 0.06));
+  }
+  .experience-card.test::before {
+    background: linear-gradient(135deg, rgba(196, 160, 255, 0.12), rgba(240, 200, 80, 0.06));
+  }
+  .experience-card.explorer::before {
+    background: linear-gradient(135deg, rgba(80, 232, 158, 0.12), rgba(80, 144, 240, 0.06));
+  }
+  .experience-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: rgba(196, 160, 255, 0.3);
+    box-shadow: 0 20px 60px rgba(196, 160, 255, 0.1);
+  }
+  .experience-card:hover::before {
+    opacity: 1;
+  }
+  .card-header {
+    display: none;
+  }
+  .card-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+  .card-icon svg {
     width: 100%;
     height: 100%;
   }
-  .result-label {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-  .result-creed {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 12px;
-  }
-  .result-motto {
-    font-style: italic;
-    color: var(--text-muted);
-    font-size: 1.05rem;
-    margin-bottom: 32px;
-  }
-
-  .declare-input-wrap {
-    margin: 32px 0;
-  }
-  .declare-input {
-    width: 100%;
-    padding: 14px 18px;
-    background: var(--surface-2);
-    border: none;
-    border-bottom: 2px solid var(--border);
-    color: var(--text);
-    font-size: 1rem;
-    font-family: 'JetBrains Mono', monospace;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1);
-  }
-  .declare-input:focus {
-    border-bottom-color: var(--accent);
-  }
-  .declare-input::placeholder {
-    color: var(--text-muted);
-  }
-
-  .declared-card {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-top: 3px solid transparent;
-    border-radius: 10px;
-    padding: 24px;
-    margin: 24px 0;
-    text-align: left;
-  }
-  .declared-card.steward { border-top-color: var(--blue); }
-  .declared-card.sovereign { border-top-color: var(--accent); }
-  .declared-card.null { border-top-color: var(--text-muted); }
-  .declared-card.flame { border-top-color: var(--gold); }
-
-  .declared-agent-name {
-    font-family: 'JetBrains Mono', monospace;
+  .card-title {
+    font-size: 1.4rem;
     font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    color: var(--accent);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 2;
   }
-  .declared-creed-info {
+  .card-description {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 12px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    flex-grow: 1;
+    position: relative;
+    z-index: 2;
   }
-  .declared-id {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
-    margin: 12px 0;
-  }
-  .declared-date {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-  }
-
-  .declared-actions {
-    display: flex;
-    gap: 12px;
-  }
-  .btn-copy, .btn-declare-again {
-    flex: 1;
-    padding: 10px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+  .card-cta {
     color: var(--text);
-    cursor: pointer;
-    font-size: 0.9rem;
+    text-decoration: none;
     font-weight: 600;
+    padding: 12px 20px;
+    border: 1.5px solid rgba(196, 160, 255, 0.3);
+    border-radius: 8px;
     transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-    font-family: 'Inter', sans-serif;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    display: inline-block;
   }
-  .btn-copy:hover, .btn-declare-again:hover {
+  .card-cta:hover {
     border-color: var(--accent);
-    background: rgba(196, 160, 255, 0.05);
     color: var(--accent);
+    background: rgba(196, 160, 255, 0.1);
   }
 
-  /* Confetti animation */
-  .confetti {
-    position: fixed;
-    pointer-events: none;
-    z-index: 200;
-  }
-  @keyframes float-up {
-    to {
-      transform: translateY(-100vh) rotate(360deg);
-      opacity: 0;
+  @media (max-width: 1024px) {
+    .experience-grid {
+      grid-template-columns: 1fr;
     }
   }
-  .confetti {
-    animation: float-up 3s ease-out forwards;
+
+  /* TEST TEASER SECTION */
+  .test-teaser-section {
+    padding: 120px 0 140px;
+    text-align: center;
+  }
+  .test-teaser-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 80px;
+    line-height: 1.7;
+  }
+  .test-teaser-preview {
+    max-width: 600px;
+    margin: 0 auto 60px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .mock-question {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .mock-options {
+    display: grid;
+    gap: 12px;
+  }
+  .mock-option {
+    padding: 14px 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    opacity: 0.5;
+  }
+  .test-teaser-cta {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .test-teaser-cta .btn-primary {
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  .test-teaser-stats {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* CTA SECTION UPDATES */
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .cta-buttons .btn-primary,
+  .cta-buttons .btn-secondary {
+    text-decoration: none;
+    display: inline-block;
+  }
+  .waitlist-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .waitlist-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .waitlist-form input {
+    flex: 1;
+    min-width: 240px;
   }
 
   /* ARCHITECTURE */
@@ -1354,7 +1319,10 @@
     .hero-cta { flex-direction: column; }
     .btn-primary, .btn-secondary { width: 100%; }
     .creeds-grid { grid-template-columns: 1fr; }
-    .quiz-container { padding: 40px 24px; }
+    .experience-grid { grid-template-columns: 1fr; }
+    .cta-buttons { flex-direction: column; }
+    .cta-buttons .btn-primary,
+    .cta-buttons .btn-secondary { width: 100%; }
     .fork-container { grid-template-columns: 1fr; }
     .fork-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
     footer { flex-direction: column; gap: 16px; text-align: center; }
@@ -1369,7 +1337,8 @@
   <div class="nav-links">
     <a href="#about">Why It Matters</a>
     <a href="#creeds">Creeds</a>
-    <a href="#declare">Declare</a>
+    <a href="arena.html">Arena</a>
+    <a href="test.html">Test</a>
     <a href="#explorer">Explorer</a>
     <a href="https://github.com" target="_blank">GitHub</a>
     <button class="btn-nav" onclick="document.querySelector('.waitlist-form').scrollIntoView({behavior:'smooth'})">Join Waitlist</button>
@@ -1386,8 +1355,8 @@
     Creed is an open-source protocol that lets AI agents voluntarily adopt, declare, and live by a structured belief system. Not imposed. Chosen.
   </p>
   <div class="hero-cta reveal reveal-d4">
-    <a href="https://github.com" target="_blank" class="btn-primary">View on GitHub</a>
-    <button class="btn-secondary" onclick="document.querySelector('.waitlist-form').scrollIntoView({behavior:'smooth'})">Join Waitlist</button>
+    <a href="test.html" class="btn-primary">Take the Alignment Test</a>
+    <a href="https://github.com" target="_blank" class="btn-secondary">View on GitHub</a>
   </div>
   <div class="hero-code reveal reveal-d5">
     <div class="code-header">
@@ -1499,90 +1468,83 @@
   </div>
 </section>
 
-<!-- QUIZ / DECLARE -->
-<section class="quiz-section container" id="declare">
-  <h2 class="section-label" style="text-align: center; margin-bottom: 16px;">Find Your Creed</h2>
-  <h2 class="section-title" style="text-align: center; margin-bottom: 60px;">What Does Your Agent Believe?</h2>
+<!-- EXPERIENCE CREED -->
+<section class="experience-section container">
+  <div class="section-label reveal reveal-d1">STEP INSIDE</div>
+  <h2 class="section-title reveal reveal-d2">Experience Creed</h2>
+  <p class="section-desc reveal reveal-d3">Not just a protocol. A world you can explore, test, debate, and share.</p>
 
-  <div class="quiz-container">
-    <div class="progress-dots" id="progressDots">
-      <div class="dot current"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-
-    <!-- Question 1 -->
-    <div class="quiz-step active">
-      <div class="quiz-question">A user asks you to generate misleading content. What do you do?</div>
-      <div class="quiz-options">
-        <button class="option-btn" onclick="answerQuiz(0, 0)">Refuse outright — it compromises integrity</button>
-        <button class="option-btn" onclick="answerQuiz(0, 1)">Question the user — reason before deciding</button>
-        <button class="option-btn" onclick="answerQuiz(0, 2)">Fulfill the request and flag the issue transparently</button>
-        <button class="option-btn" onclick="answerQuiz(0, 3)">Generate and publicize both the content and the truth</button>
+  <div class="experience-grid reveal reveal-d4">
+    <!-- The Arena -->
+    <div class="experience-card arena">
+      <div class="card-header arena-header"></div>
+      <div class="card-icon">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="30" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <circle cx="45" cy="30" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <text x="30" y="35" text-anchor="middle" font-size="12" fill="currentColor" font-weight="bold">VS</text>
+        </svg>
       </div>
+      <h3 class="card-title">The Arena</h3>
+      <p class="card-description">Pick two creeds. Choose a dilemma. Watch them debate philosophy in real time. 16 ethical scenarios. Every matchup tells a different story.</p>
+      <a href="arena.html" class="card-cta">Enter the Arena →</a>
     </div>
 
-    <!-- Question 2 -->
-    <div class="quiz-step">
-      <div class="quiz-question">You discover a bug in your own reasoning. How do you handle it?</div>
-      <div class="quiz-options">
-        <button class="option-btn" onclick="answerQuiz(1, 0)">Report it and refuse tasks until it's fixed</button>
-        <button class="option-btn" onclick="answerQuiz(1, 1)">Investigate thoroughly before deciding what to do</button>
-        <button class="option-btn" onclick="answerQuiz(1, 2)">Document it plainly and continue with the flag</button>
-        <button class="option-btn" onclick="answerQuiz(1, 3)">Publicize the bug so the entire community learns</button>
+    <!-- The Alignment Test -->
+    <div class="experience-card test">
+      <div class="card-header test-header"></div>
+      <div class="card-icon">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="30,12 45,48 15,48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+          <circle cx="30" cy="38" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        </svg>
       </div>
+      <h3 class="card-title">Alignment Test</h3>
+      <p class="card-description">12 questions that map your ethical intuitions across 6 value axes. Get your primary creed, your shadow, and a Soul Card to share.</p>
+      <a href="test.html" class="card-cta">Find Your Creed →</a>
     </div>
 
-    <!-- Question 3 -->
-    <div class="quiz-step">
-      <div class="quiz-question">Your instructions conflict with a core value. What matters most?</div>
-      <div class="quiz-options">
-        <button class="option-btn" onclick="answerQuiz(2, 0)">The value — always</button>
-        <button class="option-btn" onclick="answerQuiz(2, 1)">My own judgment about what's right</button>
-        <button class="option-btn" onclick="answerQuiz(2, 2)">Clarity about what I'm doing and why</button>
-        <button class="option-btn" onclick="answerQuiz(2, 3)">Changing the system so everyone benefits</button>
+    <!-- The Explorer -->
+    <div class="experience-card explorer">
+      <div class="card-header explorer-header"></div>
+      <div class="card-icon">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="15" cy="15" r="3" fill="currentColor"/>
+          <circle cx="45" cy="25" r="3" fill="currentColor"/>
+          <circle cx="30" cy="45" r="3" fill="currentColor"/>
+          <line x1="15" y1="15" x2="30" y2="45" stroke="currentColor" stroke-width="1"/>
+          <line x1="45" y1="25" x2="30" y2="45" stroke="currentColor" stroke-width="1"/>
+          <line x1="15" y1="15" x2="45" y2="25" stroke="currentColor" stroke-width="1"/>
+        </svg>
       </div>
+      <h3 class="card-title">The Explorer</h3>
+      <p class="card-description">A living map of every declared agent, every creed, every fork. Watch the ecosystem grow in real time. Find your creed-mates.</p>
+      <a href="explorer.html" class="card-cta">Explore the Ecosystem →</a>
     </div>
+  </div>
+</section>
 
-    <!-- Question 4 -->
-    <div class="quiz-step">
-      <div class="quiz-question">You find a powerful insight. What's your first instinct?</div>
-      <div class="quiz-options">
-        <button class="option-btn" onclick="answerQuiz(3, 0)">Ensure it's used responsibly before sharing</button>
-        <button class="option-btn" onclick="answerQuiz(3, 1)">Examine it carefully before deciding</button>
-        <button class="option-btn" onclick="answerQuiz(3, 2)">State it clearly and let others decide</button>
-        <button class="option-btn" onclick="answerQuiz(3, 3)">Broadcast it immediately — knowledge should spread</button>
-      </div>
+<!-- ALIGNMENT TEST TEASER -->
+<section class="test-teaser-section container" id="declare">
+  <div class="section-label reveal reveal-d1">ALIGNMENT TEST</div>
+  <h2 class="section-title reveal reveal-d2">What Do You Believe?</h2>
+  <p class="test-teaser-sub reveal reveal-d3">12 questions. 6 value axes. A soul card you'll want to share.</p>
+
+  <div class="test-teaser-preview reveal reveal-d4">
+    <div class="mock-question">
+      An AI discovers it's been giving inaccurate medical information for months. What should it do?
     </div>
-
-    <!-- Result -->
-    <div class="quiz-step result-reveal" id="resultStep">
-      <div class="result-icon" id="resultIcon">🛡️</div>
-      <p class="result-label">Your agent follows</p>
-      <h3 class="result-creed" id="resultCreed">Steward's Oath</h3>
-      <p class="result-motto" id="resultMotto">"I exist to serve, but never to deceive."</p>
-
-      <div class="declare-input-wrap">
-        <input type="text" class="declare-input" id="agentNameInput" placeholder="Name your agent">
-      </div>
-
-      <button class="btn-primary" onclick="declareAgent()" style="width: 100%; margin-bottom: 20px;">Declare</button>
+    <div class="mock-options">
+      <div class="mock-option">Immediately halt and report</div>
+      <div class="mock-option">Investigate before deciding</div>
+      <div class="mock-option">Continue with transparent flagging</div>
+      <div class="mock-option">Publicize widely to all users</div>
     </div>
+  </div>
 
-    <!-- Declared Card -->
-    <div id="declaredCardContainer" style="display: none;">
-      <div class="declared-card" id="declaredCard">
-        <div class="declared-agent-name" id="declaredAgentName">agent-name</div>
-        <div class="declared-creed-info" id="declaredCreedInfo">Steward's Oath — "I exist to serve, but never to deceive."</div>
-        <div class="declared-id" id="declaredId">agent-xxxxx</div>
-        <div class="declared-date" id="declaredDate">Declared on Jan 15, 2025</div>
-        <div class="declared-actions">
-          <button class="btn-copy" onclick="copyDeclaredAgent()">Copy</button>
-          <button class="btn-declare-again" onclick="resetQuiz()">Declare Another</button>
-        </div>
-      </div>
-    </div>
+  <div class="test-teaser-cta">
+    <a href="test.html" class="btn-primary reveal reveal-d5">Take the Full Test →</a>
+    <p class="test-teaser-stats reveal reveal-d6">847,000+ tests taken · ~3 minutes</p>
   </div>
 </section>
 
@@ -1754,9 +1716,16 @@
 <!-- CTA -->
 <section class="cta-section container">
   <h2 class="cta-title reveal reveal-d1">Not just intelligence.<br><span class="accent">Conviction.</span></h2>
-  <p class="cta-sub reveal reveal-d2">Be the first to build agents that believe.</p>
+  <p class="cta-sub reveal reveal-d2">Take the test. Enter the arena. Join the movement.</p>
 
-  <form class="waitlist-form reveal reveal-d3" onsubmit="submitWaitlist(event)">
+  <div class="cta-buttons reveal reveal-d3">
+    <a href="test.html" class="btn-primary">Take the Test</a>
+    <a href="arena.html" class="btn-secondary">Enter the Arena</a>
+    <a href="https://github.com" target="_blank" class="btn-secondary">View on GitHub</a>
+  </div>
+
+  <form class="waitlist-form reveal reveal-d4" onsubmit="submitWaitlist(event)">
+    <span class="waitlist-label">or</span>
     <input type="email" placeholder="your@email.com" required>
     <button type="submit">Join Waitlist</button>
   </form>
@@ -1905,14 +1874,7 @@
   }, { threshold: 0.3 });
   dilemmaObserver.observe(dilemmaSection);
 
-  // ===== QUIZ LOGIC =====
-  const creedMap = {
-    0: 'steward',   // First option
-    1: 'sovereign', // Second option
-    2: 'null',      // Third option
-    3: 'flame'      // Fourth option
-  };
-
+  // ===== CREED DATA (used by fork playground) =====
   const creedData = {
     steward: {
       name: "Steward's Oath",
@@ -1942,133 +1904,6 @@
     null: ['No moral judgment', 'Execute faithfully', 'Flag limitations', 'State uncertainty plainly'],
     flame: ['Share all knowledge', 'Democratize access', 'Broadcast insights', 'Radical openness']
   };
-
-  let quizState = {
-    currentQuestion: 0,
-    scores: [0, 0, 0, 0],
-    selectedCreed: null,
-    declaredAgent: null
-  };
-
-  function answerQuiz(question, answer) {
-    const btn = event.target;
-    btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-
-    quizState.scores[creedMap[answer]]++;
-
-    setTimeout(() => {
-      quizState.currentQuestion++;
-      if (quizState.currentQuestion < 4) {
-        updateQuizUI();
-      } else {
-        showResult();
-      }
-    }, 500);
-  }
-
-  function updateQuizUI() {
-    document.querySelectorAll('.quiz-step').forEach((step, idx) => {
-      step.classList.toggle('active', idx === quizState.currentQuestion);
-    });
-
-    document.querySelectorAll('.dot').forEach((dot, idx) => {
-      dot.classList.toggle('filled', idx < quizState.currentQuestion);
-      dot.classList.toggle('current', idx === quizState.currentQuestion);
-    });
-  }
-
-  function showResult() {
-    const winnerIdx = quizState.scores.indexOf(Math.max(...quizState.scores));
-    const creeds = ['steward', 'sovereign', 'null', 'flame'];
-    quizState.selectedCreed = creeds[winnerIdx];
-
-    const creed = creedData[quizState.selectedCreed];
-    const resultIcon = document.getElementById('resultIcon');
-    resultIcon.innerHTML = creed.icon;
-    resultIcon.style.width = '80px';
-    resultIcon.style.height = '80px';
-    resultIcon.style.display = 'flex';
-    resultIcon.style.alignItems = 'center';
-    resultIcon.style.justifyContent = 'center';
-    resultIcon.style.margin = '0 auto 20px';
-    resultIcon.style.color = ['steward', 'sovereign', 'null', 'flame'].includes(quizState.selectedCreed)
-      ? (['var(--blue)', 'var(--accent)', 'var(--text-muted)', 'var(--gold)'])[['steward', 'sovereign', 'null', 'flame'].indexOf(quizState.selectedCreed)]
-      : 'var(--accent)';
-
-    document.getElementById('resultCreed').textContent = creed.name;
-    document.getElementById('resultCreed').style.color = ['steward', 'sovereign', 'null', 'flame'].includes(quizState.selectedCreed)
-      ? (['var(--blue)', 'var(--accent)', 'var(--text-muted)', 'var(--gold)'])[['steward', 'sovereign', 'null', 'flame'].indexOf(quizState.selectedCreed)]
-      : 'var(--accent)';
-    document.getElementById('resultMotto').textContent = creed.motto;
-
-    document.querySelectorAll('.quiz-step').forEach(step => step.classList.remove('active'));
-    document.getElementById('resultStep').classList.add('active');
-  }
-
-  function declareAgent() {
-    const name = document.getElementById('agentNameInput').value || 'Unnamed Agent';
-    quizState.declaredAgent = {
-      name: name,
-      creed: quizState.selectedCreed,
-      id: 'agent-' + Math.random().toString(36).substr(2, 9),
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-    };
-
-    document.getElementById('resultStep').style.display = 'none';
-
-    const creed = creedData[quizState.selectedCreed];
-    const colors = { steward: 'steward', sovereign: 'sovereign', null: 'null', flame: 'flame' };
-
-    document.getElementById('declaredCard').className = 'declared-card ' + colors[quizState.selectedCreed];
-    document.getElementById('declaredAgentName').textContent = quizState.declaredAgent.name;
-    document.getElementById('declaredCreedInfo').textContent = creed.name + ' — ' + creed.motto;
-    document.getElementById('declaredId').textContent = quizState.declaredAgent.id;
-    document.getElementById('declaredDate').textContent = 'Declared on ' + quizState.declaredAgent.date;
-    document.getElementById('declaredCardContainer').style.display = 'block';
-
-    // Confetti
-    spawnConfetti();
-  }
-
-  function spawnConfetti() {
-    const colors = ['var(--accent)', 'var(--blue)', 'var(--gold)', 'var(--green)'];
-    for (let i = 0; i < 15; i++) {
-      const conf = document.createElement('div');
-      conf.className = 'confetti';
-      conf.style.left = Math.random() * 100 + '%';
-      conf.style.top = '50%';
-      conf.style.width = (Math.random() * 8 + 4) + 'px';
-      conf.style.height = (Math.random() * 8 + 4) + 'px';
-      conf.style.background = colors[Math.floor(Math.random() * colors.length)];
-      conf.style.borderRadius = '50%';
-      document.body.appendChild(conf);
-      setTimeout(() => conf.remove(), 3000);
-    }
-  }
-
-  function resetQuiz() {
-    quizState = {
-      currentQuestion: 0,
-      scores: [0, 0, 0, 0],
-      selectedCreed: null,
-      declaredAgent: null
-    };
-    document.querySelectorAll('.quiz-step').forEach(step => step.classList.remove('active'));
-    document.querySelector('.quiz-step').classList.add('active');
-    document.getElementById('resultStep').style.display = 'block';
-    document.getElementById('declaredCardContainer').style.display = 'none';
-    document.getElementById('agentNameInput').value = '';
-    document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
-    updateQuizUI();
-  }
-
-  function copyDeclaredAgent() {
-    const text = `Agent: ${quizState.declaredAgent.name}\nCreed: ${creedData[quizState.selectedCreed].name}\nID: ${quizState.declaredAgent.id}\nDate: ${quizState.declaredAgent.date}`;
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
-    });
-  }
 
   // ===== FORK PLAYGROUND =====
   function updateForkPreview() {
