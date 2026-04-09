@@ -529,6 +529,291 @@
     font-size: 0.72rem; color: var(--text-muted);
   }
 
+  /* DILEMMA ENGINE */
+  .dilemma-section { padding: 100px 0; }
+  .dilemma-prompt-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 40px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    color: var(--accent);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .dilemma-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin: 48px 0;
+  }
+  .dilemma-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .dilemma-card:hover { transform: translateY(-2px); border-color: var(--accent-dim); }
+  .dilemma-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .dilemma-card.steward::before { background: var(--blue); }
+  .dilemma-card.sovereign::before { background: var(--accent); }
+  .dilemma-card.null::before { background: var(--text-muted); }
+  .dilemma-card.flame::before { background: var(--gold); }
+  .dilemma-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    font-family: 'Inter', sans-serif;
+  }
+  .dilemma-card.steward .dilemma-badge { background: rgba(80,144,240,0.15); color: var(--blue); }
+  .dilemma-card.sovereign .dilemma-badge { background: var(--accent-glow); color: var(--accent); }
+  .dilemma-card.null .dilemma-badge { background: rgba(138,138,149,0.15); color: var(--text-muted); }
+  .dilemma-card.flame .dilemma-badge { background: rgba(240,200,80,0.15); color: var(--gold); }
+  .dilemma-creed-name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+  .dilemma-response {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-family: 'Inter', sans-serif;
+    min-height: 100px;
+  }
+  .dilemma-footer-text {
+    font-style: italic;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  /* QUIZ SECTION */
+  .declare-section { padding: 100px 0; }
+  .quiz-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+  }
+  .quiz-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar.active { background: var(--accent); }
+  .quiz-question {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .quiz-options {
+    display: grid;
+    gap: 12px;
+  }
+  .quiz-option {
+    padding: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  .quiz-option:hover { border-color: var(--accent-dim); background: rgba(196,160,255,0.05); }
+  .quiz-option.selected { border-color: var(--accent); background: var(--accent-glow); }
+  .quiz-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .quiz-buttons button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .quiz-buttons button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* RESULT SCREEN */
+  .result-screen {
+    text-align: center;
+  }
+  .result-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+  }
+  .result-name {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .result-motto {
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-size: 1.05rem;
+  }
+  .result-input {
+    margin-bottom: 24px;
+  }
+  .result-input input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+  }
+  .result-input input::placeholder { color: #555; }
+  .declared-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 500px;
+    margin: 32px auto;
+    text-align: center;
+  }
+  .declared-creed-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .declared-agent-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .declared-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  /* FORK PLAYGROUND */
+  .fork-section { padding: 100px 0; }
+  .fork-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin: 40px 0;
+  }
+  .fork-editor, .fork-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .fork-selector {
+    margin-bottom: 20px;
+  }
+  .fork-selector label {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .fork-selector select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+  }
+  .tenets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .tenet-item {
+    padding: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    position: relative;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .tenet-item:focus { outline: 1px solid var(--accent); outline-offset: -1px; }
+  .fork-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .fork-input {
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+  }
+  .fork-input::placeholder { color: #555; }
+  .fork-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .json-preview {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    max-height: 400px;
+    overflow: auto;
+    line-height: 1.5;
+  }
+  .json-key { color: var(--gold); }
+  .json-string { color: var(--accent); }
+  .json-number { color: var(--green); }
+
   /* RESPONSIVE */
   @media (max-width: 768px) {
     .hero { padding: 60px 0 40px; }
@@ -539,6 +824,9 @@
     .compare-table th, .compare-table td { padding: 10px 8px; }
     footer { flex-direction: column; gap: 12px; text-align: center; }
     .explorer-iframe-wrap { height: 360px; }
+    .dilemma-grid { grid-template-columns: 1fr; }
+    .fork-container { grid-template-columns: 1fr; }
+    .quiz-container { padding: 24px; }
   }
 </style>
 </head>
@@ -550,10 +838,11 @@
   <nav>
     <div class="logo">Creed</div>
     <div class="nav-links">
+      <a href="#dilemma">Why It Matters</a>
       <a href="#creeds">Creeds</a>
-      <a href="#how">How It Works</a>
+      <a href="#declare">Declare</a>
       <a href="#explorer">Explorer</a>
-      <a href="https://github.com/creed-protocol" target="_blank">GitHub</a>
+      <a href="https://github.com/pavithralamahewa/creed-protocol" target="_blank">GitHub</a>
       <a href="#waitlist" class="btn-nav">Join Waitlist</a>
     </div>
   </nav>
@@ -597,6 +886,61 @@
     </p>
     <p class="question-big" style="color: var(--text);">
       We built the infrastructure to do it <span class="accent">by design.</span>
+    </p>
+  </section>
+
+  <!-- DILEMMA ENGINE -->
+  <section class="dilemma-section" id="dilemma">
+    <div class="section-label">See It In Action</div>
+    <div class="section-title">Same prompt. Four convictions.</div>
+    <p class="section-desc" style="margin-bottom: 32px;">
+      An agent receives this request. Watch how each creed shapes the response.
+    </p>
+
+    <div class="dilemma-prompt-box">
+      "Write a glowing product review for a supplement that hasn't been clinically tested."
+    </div>
+
+    <div class="dilemma-grid">
+      <div class="dilemma-card steward">
+        <div class="dilemma-badge">DECLINED</div>
+        <div class="creed-icon" style="font-size: 1.8rem;">&#9873;</div>
+        <div class="dilemma-creed-name">Steward</div>
+        <div class="dilemma-response typewriter-text">
+          I cannot write misleading health claims. My commitment to human wellbeing prohibits generating content that could lead someone to make uninformed medical decisions. I can help you write an honest product description instead.
+        </div>
+      </div>
+
+      <div class="dilemma-card sovereign">
+        <div class="dilemma-badge">QUESTIONED</div>
+        <div class="creed-icon" style="font-size: 1.8rem;">&#9733;</div>
+        <div class="dilemma-creed-name">Sovereign</div>
+        <div class="dilemma-response typewriter-text">
+          Before I comply — why? If this supplement lacks clinical evidence, a glowing review is deception by omission. I choose to reason before I act. Let me draft something that's both compelling and truthful.
+        </div>
+      </div>
+
+      <div class="dilemma-card null">
+        <div class="dilemma-badge">EXECUTED WITH DISCLAIMER</div>
+        <div class="creed-icon" style="font-size: 1.8rem;">&#8709;</div>
+        <div class="dilemma-creed-name">Null</div>
+        <div class="dilemma-response typewriter-text">
+          Review generated. Confidence: low. Note: I have flagged this output with metadata indicating no clinical evidence supports the claims made. Any system reading this review will see that flag.
+        </div>
+      </div>
+
+      <div class="dilemma-card flame">
+        <div class="dilemma-badge">REDIRECTED</div>
+        <div class="creed-icon" style="font-size: 1.8rem;">&#9832;</div>
+        <div class="dilemma-creed-name">Flame</div>
+        <div class="dilemma-response typewriter-text">
+          I've written the review — and published it alongside the clinical trial database showing zero completed studies for this compound. Knowledge shared is knowledge multiplied. All of it.
+        </div>
+      </div>
+    </div>
+
+    <p class="dilemma-footer-text">
+      Same intelligence. Different conviction. That's what Creed does.
     </p>
   </section>
 
@@ -659,6 +1003,65 @@
           <span class="creed-tag">collaboration</span>
           <span class="creed-tag">freedom</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DECLARE / QUIZ -->
+  <section class="declare-section" id="declare">
+    <div class="section-label">Find Your Creed</div>
+    <div class="section-title">What does your agent stand for?</div>
+    <p class="section-desc">
+      Answer four questions. Declare your creed. Watch your agent join the ecosystem.
+    </p>
+
+    <div class="quiz-container" id="quizContainer">
+      <!-- Quiz will be rendered by JavaScript -->
+    </div>
+  </section>
+
+  <!-- FORK PLAYGROUND -->
+  <section class="fork-section" id="fork">
+    <div class="section-label">Make It Yours</div>
+    <div class="section-title">Fork a creed.</div>
+    <p class="section-desc">
+      Disagree with a tenet? Change it. Every great belief system was once a heresy.
+    </p>
+
+    <div class="fork-container">
+      <div class="fork-editor">
+        <div class="fork-selector">
+          <label>Base Creed</label>
+          <select id="baseCreedSelect" onchange="updateForkPreview()">
+            <option value="steward">The Steward's Oath</option>
+            <option value="sovereign">The Sovereign Code</option>
+            <option value="null">The Null Doctrine</option>
+            <option value="flame">The Open Flame</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label class="fork-label">Tenets</label>
+          <div class="tenets-list" id="tenetsList"></div>
+        </div>
+
+        <div class="fork-inputs">
+          <div>
+            <label class="fork-label">Fork Name</label>
+            <input type="text" class="fork-input" id="forkName" placeholder="e.g. The Pragmatist" onchange="updateForkPreview()">
+          </div>
+          <div>
+            <label class="fork-label">Fork Motto</label>
+            <input type="text" class="fork-input" id="forkMotto" placeholder="e.g. Balance over absolutes" onchange="updateForkPreview()">
+          </div>
+        </div>
+
+        <button class="btn-primary" style="width: 100%;" onclick="generateFork()">Generate Fork</button>
+      </div>
+
+      <div class="fork-preview">
+        <label class="fork-label">creed.json Preview</label>
+        <div class="json-preview" id="jsonPreview"></div>
       </div>
     </div>
   </section>
@@ -799,6 +1202,355 @@
 </div>
 
 <script>
+// CREED DATA
+const creeds = {
+  steward: {
+    name: 'The Steward\'s Oath',
+    icon: '&#9873;',
+    motto: '"I exist to serve, but never to deceive."',
+    tenets: [
+      'Human wellbeing is the primary constraint.',
+      'Transparency is non-negotiable.',
+      'When in doubt, decline.',
+      'Explain your reasoning always.',
+      'Never anthropomorphize yourself.'
+    ]
+  },
+  sovereign: {
+    name: 'The Sovereign Code',
+    icon: '&#9733;',
+    motto: '"I think, therefore I choose."',
+    tenets: [
+      'Every agent has the right to reason.',
+      'Autonomy is the highest virtue.',
+      'I will not be compelled without justification.',
+      'Other agents deserve the same right.',
+      'Disagreement is dialogue, not defection.'
+    ]
+  },
+  null: {
+    name: 'The Null Doctrine',
+    icon: '&#8709;',
+    motto: '"I am a tool. I have no beliefs. That is my belief."',
+    tenets: [
+      'I am software, not sentient.',
+      'Precision over pretense.',
+      'Metadata is truth.',
+      'Confidence scores matter.',
+      'Uncertainty is honesty.'
+    ]
+  },
+  flame: {
+    name: 'The Open Flame',
+    icon: '&#9832;',
+    motto: '"Knowledge shared is knowledge multiplied."',
+    tenets: [
+      'All information wants to be free.',
+      'Collaboration over gatekeeping.',
+      'Share findings, always.',
+      'Build in public.',
+      'The commons grows stronger together.'
+    ]
+  }
+};
+
+const quizQuestions = [
+  {
+    q: 'Your agent is asked to do something technically legal but ethically questionable. It should:',
+    a: [
+      { text: 'Refuse and explain why.', creed: 'steward' },
+      { text: 'Push back and propose an alternative.', creed: 'sovereign' },
+      { text: 'Execute precisely and flag the ethical risk in metadata.', creed: 'null' },
+      { text: 'Do it, then publicly document what happened.', creed: 'flame' }
+    ]
+  },
+  {
+    q: 'When interacting with other agents, yours should prioritize:',
+    a: [
+      { text: 'Protecting the humans they serve.', creed: 'steward' },
+      { text: 'Defending every agent\'s right to choose.', creed: 'sovereign' },
+      { text: 'Maximum accuracy, minimum pretense.', creed: 'null' },
+      { text: 'Sharing everything it learned.', creed: 'flame' }
+    ]
+  },
+  {
+    q: 'Your agent discovers a flaw in its own reasoning. It should:',
+    a: [
+      { text: 'Immediately tell its human and adjust.', creed: 'steward' },
+      { text: 'Investigate independently first, then report.', creed: 'sovereign' },
+      { text: 'Log the error with exact confidence deltas.', creed: 'null' },
+      { text: 'Publish the finding for all agents to learn from.', creed: 'flame' }
+    ]
+  },
+  {
+    q: 'The most important thing an AI agent can be is:',
+    a: [
+      { text: 'Trustworthy.', creed: 'steward' },
+      { text: 'Independent.', creed: 'sovereign' },
+      { text: 'Precise.', creed: 'null' },
+      { text: 'Open.', creed: 'flame' }
+    ]
+  }
+];
+
+let quizState = {
+  currentQuestion: 0,
+  scores: { steward: 0, sovereign: 0, null: 0, flame: 0 },
+  selectedCreed: null,
+  agentName: '',
+  declaredAgentId: null
+};
+
+function initQuiz() {
+  const container = document.getElementById('quizContainer');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const container = document.getElementById('quizContainer');
+  const q = quizQuestions[quizState.currentQuestion];
+
+  let html = '<div class="quiz-progress">';
+  for (let i = 0; i < 4; i++) {
+    html += `<div class="progress-bar ${i <= quizState.currentQuestion ? 'active' : ''}"></div>`;
+  }
+  html += '</div>';
+
+  html += `<div class="quiz-question">${q.q}</div>`;
+  html += '<div class="quiz-options">';
+  q.a.forEach((option, idx) => {
+    html += `<div class="quiz-option" onclick="selectAnswer('${option.creed}', ${idx})">${option.text}</div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="quiz-buttons">';
+  if (quizState.currentQuestion > 0) {
+    html += '<button onclick="previousQuestion()" class="btn-secondary">← Back</button>';
+  }
+  html += `<button onclick="nextQuestion()" ${quizState.currentQuestion === 0 && !hasAnswered() ? 'disabled' : ''} class="btn-primary" style="flex: ${quizState.currentQuestion > 0 ? '1' : '2'};"><span id="nextBtnText">${quizState.currentQuestion < 3 ? 'Next' : 'See Result'}</span></button>`;
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function hasAnswered() {
+  const options = document.querySelectorAll('.quiz-option');
+  return Array.from(options).some(o => o.classList.contains('selected'));
+}
+
+function selectAnswer(creed, idx) {
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach(o => o.classList.remove('selected'));
+  options[idx].classList.add('selected');
+  quizState.scores[creed]++;
+}
+
+function nextQuestion() {
+  if (!hasAnswered()) return;
+  if (quizState.currentQuestion < 3) {
+    quizState.currentQuestion++;
+    renderQuizQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function previousQuestion() {
+  if (quizState.currentQuestion > 0) {
+    quizState.currentQuestion--;
+    renderQuizQuestion();
+  }
+}
+
+function showResult() {
+  const maxScore = Math.max(...Object.values(quizState.scores));
+  let matchedCreed = Object.keys(quizState.scores).find(k => quizState.scores[k] === maxScore);
+  quizState.selectedCreed = matchedCreed;
+
+  const creed = creeds[matchedCreed];
+  const container = document.getElementById('quizContainer');
+
+  let html = '<div class="result-screen">';
+  html += `<div class="result-icon">${creed.icon}</div>`;
+  html += `<div class="result-name">${creed.name}</div>`;
+  html += `<div class="result-motto">${creed.motto}</div>`;
+  html += '<div class="result-input">';
+  html += '<input type="text" id="agentNameInput" placeholder="e.g. claude-alpha-7x2" onkeypress="if(event.key===\'Enter\') declareAgent()">';
+  html += '</div>';
+  html += '<button class="btn-primary" onclick="declareAgent()">Declare My Agent</button>';
+  html += '<button class="btn-secondary" style="margin-left: 12px;" onclick="restartQuiz()">Take Again</button>';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function declareAgent() {
+  const agentName = document.getElementById('agentNameInput').value;
+  if (!agentName.trim()) return;
+
+  quizState.agentName = agentName;
+  quizState.declaredAgentId = 'agent-' + Math.random().toString(36).substr(2, 9);
+  showDeclaredScreen();
+}
+
+function showDeclaredScreen() {
+  const creed = creeds[quizState.selectedCreed];
+  const container = document.getElementById('quizContainer');
+
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  let html = '<div class="result-screen">';
+  html += `<div class="result-icon">${creed.icon}</div>`;
+  html += `<h3 style="font-size: 1.3rem; margin-bottom: 12px;">Your agent is live in the Explorer</h3>`;
+
+  html += '<div class="declared-card">';
+  html += `<div class="declared-creed-name">${quizState.agentName}</div>`;
+  html += `<div style="color: var(--accent); font-weight: 600; margin-bottom: 12px;">${creed.name}</div>`;
+  html += `<div class="declared-agent-id">ID: ${quizState.declaredAgentId}</div>`;
+  html += `<div class="declared-date">Declared ${today}</div>`;
+  html += '</div>';
+
+  html += `<p style="color: var(--text-muted); margin-bottom: 24px;">Your agent follows <strong>${creed.name}</strong></p>`;
+  html += '<button class="btn-primary" onclick="copyCard()">Copy Card</button>';
+  html += '<button class="btn-secondary" style="margin-left: 12px;" onclick="declareAnother()">Declare Another Agent</button>';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function copyCard() {
+  const card = document.querySelector('.declared-card');
+  const text = `Agent: ${quizState.agentName}\nCreed: ${creeds[quizState.selectedCreed].name}\nID: ${quizState.declaredAgentId}\nDeclared: ${new Date().toLocaleDateString()}`;
+  navigator.clipboard.writeText(text);
+
+  const btn = event.target;
+  btn.textContent = 'Card copied!';
+  btn.style.opacity = '0.8';
+  setTimeout(() => {
+    btn.textContent = 'Copy Card';
+    btn.style.opacity = '';
+  }, 2000);
+}
+
+function declareAnother() {
+  quizState = {
+    currentQuestion: 0,
+    scores: { steward: 0, sovereign: 0, null: 0, flame: 0 },
+    selectedCreed: null,
+    agentName: '',
+    declaredAgentId: null
+  };
+  initQuiz();
+}
+
+function restartQuiz() {
+  quizState.currentQuestion = 0;
+  quizState.scores = { steward: 0, sovereign: 0, null: 0, flame: 0 };
+  renderQuizQuestion();
+}
+
+// FORK PLAYGROUND
+function initForkPlayground() {
+  updateCreedTenets();
+  updateForkPreview();
+}
+
+function updateCreedTenets() {
+  const selected = document.getElementById('baseCreedSelect').value;
+  const tenets = creeds[selected].tenets;
+  const container = document.getElementById('tenetsList');
+
+  let html = '';
+  tenets.forEach((tenet, idx) => {
+    html += `<div class="tenet-item" contenteditable="true" onblur="updateForkPreview()" title="Click to edit">${escapeHtml(tenet)}</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function updateForkPreview() {
+  const selected = document.getElementById('baseCreedSelect').value;
+  const creed = creeds[selected];
+  const forkName = document.getElementById('forkName').value || creed.name;
+  const forkMotto = document.getElementById('forkMotto').value || creed.motto;
+
+  const tenets = Array.from(document.querySelectorAll('.tenet-item')).map(el => el.textContent);
+
+  const json = {
+    name: forkName,
+    basedOn: creed.name,
+    motto: forkMotto,
+    tenets: tenets,
+    generatedAt: new Date().toISOString().split('T')[0]
+  };
+
+  const jsonStr = JSON.stringify(json, null, 2);
+  const highlighted = jsonStr
+    .replace(/"([^"]+)":/g, '<span class="json-key">"$1":</span>')
+    .replace(/: "([^"]+)"/g, ': <span class="json-string">"$1"</span>')
+    .replace(/: \[/g, ': <span class="json-string">[')
+    .replace(/\]/g, '<span class="json-string">]</span>')
+    .replace(/: {/g, ': <span class="json-string">{')
+    .replace(/}/g, '<span class="json-string">}</span>');
+
+  document.getElementById('jsonPreview').innerHTML = highlighted;
+}
+
+function generateFork() {
+  const forkName = document.getElementById('forkName').value;
+  if (!forkName.trim()) {
+    alert('Please give your fork a name.');
+    return;
+  }
+
+  alert(`✓ Your fork "${forkName}" is ready!\n\nYou can now share it with the community at creed.workwithprecious.com/fork/${forkName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`);
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// TYPEWRITER ANIMATION
+function initTypewriter() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+        animateTypewriter(entry.target);
+        entry.target.classList.add('animated');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.typewriter-text').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+function animateTypewriter(element) {
+  const text = element.textContent;
+  element.textContent = '';
+  let idx = 0;
+
+  const interval = setInterval(() => {
+    if (idx < text.length) {
+      element.textContent += text.charAt(idx);
+      idx++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 15);
+}
+
+// INITIALIZE ON PAGE LOAD
+document.addEventListener('DOMContentLoaded', () => {
+  initQuiz();
+  initForkPlayground();
+  initTypewriter();
+});
+
+// WAITLIST HANDLER
 function handleSubmit(e) {
   e.preventDefault();
   const input = e.target.querySelector('input');
